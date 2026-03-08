@@ -14,20 +14,27 @@
       --border: rgba(26,26,26,0.13);
       --focus: #1d4ed8;
     }
-    html { scroll-behavior: smooth; font-size: 20px; overflow-x: hidden; }
+    html { scroll-behavior: smooth; font-size: 20px; }
     body { background: var(--white); color: var(--black); font-family: 'EB Garamond', Georgia, serif; font-size: 20px; line-height: 1.6; overflow-x: hidden; }
     :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
     .sr-only { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; }
 
     /* NAV */
-    nav { position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;padding:0.75rem 2.5rem;background:var(--white);border-bottom:2px solid var(--black);transition:transform 0.3s ease; }
+    nav { position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0.75rem 2.5rem;background:var(--white);border-bottom:2px solid var(--black);transition:transform 0.3s ease; }
     .nav-logo img { height:56px;display:block; }
-    .nav-logo { flex-shrink:0; order:0; }
-    .menu-toggle { display:none; background:none; border:none; padding:0.2rem; cursor:pointer; color:var(--black); order:1; }
-    .nav-links { display:flex;gap:2rem;list-style:none;flex:1;justify-content:flex-end;padding:0 2rem 0 2rem; order:2; }
-    .nav-links a { font-size:0.8rem;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none;color:var(--black);border-bottom:2px solid transparent;padding-bottom:0.15rem;transition:border-color 0.2s;white-space:nowrap; }
+    .nav-links { display:flex;gap:2rem;list-style:none; }
+    .nav-links a { font-size:0.8rem;letter-spacing:0.15em;text-transform:uppercase;text-decoration:none;color:var(--black);border-bottom:2px solid transparent;padding-bottom:0.15rem;transition:border-color 0.2s; }
     .nav-links a:hover { border-bottom-color:var(--black); }
-    .lang-picker { order:3; }
+    .menu-toggle { display:none; background:none; border:none; padding:0.2rem; cursor:pointer; color:var(--black); }
+    .menu-toggle:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+    .menu-icon { width:28px; height:20px; display:block; position:relative; }
+    .menu-icon span { position:absolute; left:0; width:100%; height:2px; background:currentColor; transition:transform 0.25s ease, opacity 0.25s ease, top 0.25s ease; }
+    .menu-icon span:nth-child(1) { top:1px; }
+    .menu-icon span:nth-child(2) { top:9px; }
+    .menu-icon span:nth-child(3) { top:17px; }
+    nav.menu-open .menu-icon span:nth-child(1) { top:9px; transform:rotate(45deg); }
+    nav.menu-open .menu-icon span:nth-child(2) { opacity:0; }
+    nav.menu-open .menu-icon span:nth-child(3) { top:9px; transform:rotate(-45deg); }
 
     /* HERO */
     #hero {
@@ -115,7 +122,7 @@
     .legend-item { display:flex;align-items:center;gap:0.5rem; }
     .legend-line { width:20px;height:2px;background:var(--black);display:inline-block; }
     .legend-bar { width:3px;height:14px;background:rgba(26,26,26,0.25);display:inline-block; }
-    .poem-text { font-size:1rem;line-height:1.8;white-space:pre-wrap;font-style:italic;overflow-wrap:break-word;word-break:break-word;max-width:100%; }
+    .poem-text { font-size:1rem;line-height:1.8;white-space:pre-wrap;font-style:italic; }
     .poem-original { display:block; }
     .poem-lelio { display:block;padding-left:1.1rem;border-left:3px solid rgba(26,26,26,0.2);color:var(--mid);margin:0.7rem 0; }
     .poem-note { font-size:0.85rem;color:var(--mid);font-style:normal;margin-bottom:0.9rem;display:block;letter-spacing:0.04em; }
@@ -193,50 +200,22 @@
     footer { padding:1.8rem 2.5rem;background:var(--black);border-top:1px solid rgba(255,255,255,0.1); }
     .footer-copy { font-size:0.82rem;color:rgba(255,255,255,0.38);letter-spacing:0.08em; }
 
-
-    /* LANG PICKER — dropdown */
-    .lang-picker { position:relative; flex-shrink:0; }
-    .lang-trigger { display:flex; align-items:center; gap:0.25rem; background:none; border:none; cursor:pointer; font-family:'EB Garamond',serif; font-size:0.72rem; letter-spacing:0.13em; text-transform:uppercase; color:var(--mid); padding:0.25rem 0; transition:color 0.15s; line-height:1; }
-    .lang-trigger:hover, .lang-trigger[aria-expanded="true"] { color:var(--black); }
-    .lang-trigger:focus-visible { outline:3px solid var(--focus); outline-offset:2px; }
-    .lang-trigger-label { color:var(--mid); font-weight:400; transition:color 0.15s; }
-    .lang-trigger:hover .lang-trigger-label, .lang-trigger[aria-expanded="true"] .lang-trigger-label { color:var(--black); }
-    .lang-trigger-arrow { width:0; height:0; border-left:3px solid transparent; border-right:3px solid transparent; border-top:4px solid currentColor; opacity:0.4; transition:transform 0.2s; flex-shrink:0; margin-top:1px; }
-    .lang-trigger[aria-expanded="true"] .lang-trigger-arrow { transform:rotate(180deg); }
-    .lang-dropdown { display:none; position:absolute; top:calc(100% + 0.5rem); right:0; background:var(--white); border:1px solid var(--border); min-width:7rem; box-shadow:0 4px 16px rgba(26,26,26,0.08); z-index:300; }
-    .lang-trigger[aria-expanded="true"] ~ .lang-dropdown { display:block; }
-    .lang-option { display:flex; align-items:center; gap:0.5rem; width:100%; background:none; border:none; padding:0.55rem 0.8rem; font-family:'EB Garamond',serif; font-size:0.7rem; letter-spacing:0.13em; text-transform:uppercase; cursor:pointer; color:var(--mid); text-align:left; transition:background 0.12s; white-space:nowrap; }
-    .lang-option:hover { background:rgba(26,26,26,0.04); color:var(--black); }
-    .lang-option.active { color:var(--black); }
-    .lang-option.active::before { content:'·'; font-size:0.9rem; line-height:1; opacity:0.6; }
-    .lang-option:not(.active)::before { content:''; display:inline-block; width:0.55rem; }
-    .lang-option:focus-visible { outline:3px solid var(--focus); outline-offset:-2px; }
-    /* Mobile: picker hidden, language row appears inside burger */
-    @media (max-width:768px) { .lang-picker { display:none; } }
-    .nav-lang-item { border-top:1px solid var(--border) !important; }
-    .nav-lang-item .nav-lang-inner { display:flex; gap:0; padding:0.75rem 1.1rem 0.6rem; align-items:center; }
-    .nav-lang-item .nav-lang-label { font-size:0.68rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--mid); margin-right:0.9rem; }
-    .nav-lang-item .lang-btn-mobile { background:none; border:none; font-family:'EB Garamond',serif; font-size:0.8rem; letter-spacing:0.13em; text-transform:uppercase; cursor:pointer; color:var(--mid); padding:0.1rem 0.45rem; transition:color 0.15s; }
-    .nav-lang-item .lang-btn-mobile.active { color:var(--black); font-weight:600; }
-    .nav-lang-item .lang-btn-mobile:focus-visible { outline:3px solid var(--focus); }
-
     @keyframes fadeUp { from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)} }
     @keyframes fadeIn { from{opacity:0}to{opacity:1} }
 
     /* TABLET */
     @media (max-width:900px) {
       #hero { grid-template-columns:1fr;min-height:auto;padding:7rem 1.5rem 3.5rem; }
-      .hero-bg-logo { width:100%;max-width:100vw;right:-5%;opacity:0.06; }
+      .hero-bg-logo { width:110vw;right:-5%;opacity:0.06; }
       .musician-card { grid-template-columns:160px 1fr; }
       .musician-photo { width:160px; }
     }
     @media (max-width:768px) {
       html { font-size: 20px; }
-      nav { padding:0.95rem 1.1rem; justify-content:center; gap:0; }
-      .nav-logo { position:relative; z-index:202; order:1; }
+      nav { padding:0.95rem 1.1rem; justify-content:center; }
+      .nav-logo { position:relative; z-index:202; }
       .nav-logo img { height:72px; }
-      .menu-toggle { display:block; position:absolute; right:1.1rem; top:50%; transform:translateY(-50%); z-index:203; order:2; }
-
+      .menu-toggle { display:block; position:absolute; right:1.1rem; top:50%; transform:translateY(-50%); z-index:203; }
       .nav-links {
         display:none;
         position:absolute;
@@ -247,8 +226,6 @@
         background:var(--white);
         border-bottom:2px solid var(--black);
         padding:0.45rem 0;
-        margin-right:0;
-        order:3;
       }
       nav.menu-open .nav-links { display:flex; }
       .nav-links li { border-top:1px solid var(--border); }
@@ -355,163 +332,146 @@
 </head>
 <body>
 
-<nav id="main-nav" role="navigation" data-aria-de="Hauptnavigation" data-aria-en="Main navigation" aria-label="Main navigation">
-  <a class="nav-logo" href="#hero" data-aria-de="Lelio – zurück nach oben" data-aria-en="Lelio – back to top" aria-label="Lelio – back to top">
+<nav id="main-nav" role="navigation" aria-label="Main navigation">
+  <a class="nav-logo" href="#hero" aria-label="Lelio – back to top">
     <img src="images/logo-lelio.png" alt="Lelio" />
   </a>
   <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Open menu">
     <span class="menu-icon" aria-hidden="true"><span></span><span></span><span></span></span>
   </button>
   <ul class="nav-links" id="site-menu">
-    <li><a href="#why" data-de="Über das Projekt" data-en="About">About</a></li>
-    <li><a href="#music" data-de="Musik" data-en="Music">Music</a></li>
-    <li><a href="#poets" data-de="Dichter·innen" data-en="Poets">Poets</a></li>
-    <li><a href="#tracklist" data-de="Tracks" data-en="Tracks">Tracks</a></li>
-    <li><a href="#musicians" data-de="Musiker·innen" data-en="Musicians">Musicians</a></li>
-    <li><a href="#listen" data-de="Anhören" data-en="Listen">Listen</a></li>
-    <li><a href="#contact" data-de="Kontakt" data-en="Contact">Contact</a></li>
-    <li class="nav-lang-item">
-      <div class="nav-lang-inner">
-        <span class="nav-lang-label" aria-hidden="true">Lang</span>
-        <button class="lang-btn-mobile active" id="btn-en-m" onclick="setLangClose('en')">EN</button>
-        <button class="lang-btn-mobile" id="btn-de-m" onclick="setLangClose('de')">DE</button>
-      </div>
-    </li>
+    <li><a href="#why">About</a></li>
+    <li><a href="#music">Music</a></li>
+    <li><a href="#poets">Poets</a></li>
+    <li><a href="#tracklist">Tracks</a></li>
+    <li><a href="#musicians">Musicians</a></li>
+    <li><a href="#listen">Listen</a></li>
+    <li><a href="#contact">Contact</a></li>
   </ul>
-  <div class="lang-picker" id="lang-picker">
-    <button class="lang-trigger" id="lang-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Language">
-      <span class="lang-trigger-label" id="lang-trigger-label">EN</span>
-      <span class="lang-trigger-arrow" aria-hidden="true"></span>
-    </button>
-    <div class="lang-dropdown" role="listbox" id="lang-dropdown" aria-label="Select language">
-      <button class="lang-option active" id="opt-en" role="option" aria-selected="true" onclick="setLangClose('en')">English</button>
-      <button class="lang-option" id="opt-de" role="option" aria-selected="false" onclick="setLangClose('de')">Deutsch</button>
-    </div>
-  </div>
 </nav>
 
 <section id="hero" aria-label="Introduction">
   <img class="hero-bg-logo" src="images/logo-lelio.png" alt="" aria-hidden="true" />
   <div class="hero-text">
     <h1 class="hero-title">Lelio</h1>
-    <p class="hero-tagline" data-de="Sechs Lieder. Sechs Dichter·innen. Eine Reise durch Erinnerung, Exil und die Weigerung zur Vereinfachung." data-en="Six songs. Six poets. One journey through memory, exile, and the refusal of simplification.">Six songs. Six poets. One journey through memory, exile, and the refusal of simplification.</p>
+    <p class="hero-tagline">Six songs. Six poets. One journey through memory, exile, and the refusal of simplification.</p>
     <div class="hero-cta">
-      <a href="#listen" class="btn-primary" data-de="Anhören" data-en="Listen">Listen</a>
-      <a href="#why" class="btn-outline" data-de="Zum Projekt" data-en="About the project">About the project</a>
+      <a href="#listen" class="btn-primary">Listen</a>
+      <a href="#why" class="btn-outline">About the project</a>
     </div>
   </div>
 </section>
 
 <section id="why">
-  <span class="section-label" data-de="Das Projekt" data-en="The Project">The Project</span>
+  <span class="section-label">The Project</span>
   <div class="why-grid">
     <div class="why-text">
-      <h2 class="section-title" data-de="Warum dieses Album entstand" data-en="Why this album exists">Why this album exists</h2>
-      <p data-de="Das Album vereint Gedichte von Rose Ausländer, Theodor Kramer, Mimi Grossberg, Paul Elbogen, Jura Soyfer und Erich Fried — Autorinnen und Autoren, deren Leben und Werk vom Exil, von Vertreibung und den Erschütterungen des zwanzigsten Jahrhunderts geprägt waren." data-en="The album brings together poems by Rose Ausländer, Theodor Kramer, Mimi Grossberg, Paul Elbogen, Jura Soyfer, and Erich Fried — writers whose lives and work were shaped by exile, displacement, and the upheavals of the twentieth century.">The album brings together poems by Rose Ausländer, Theodor Kramer, Mimi Grossberg, Paul Elbogen, Jura Soyfer, and Erich Fried — writers whose lives and work were shaped by exile, displacement, and the upheavals of the twentieth century.</p>
-<p data-de="Was uns bei der Arbeit mit diesen Texten überraschte, war, wie wenig sie gealtert sind." data-en="What surprised us while working with these texts was how little had aged.">What surprised us while working with these texts was how little had aged.</p>
-<p data-de="Sie stellen Fragen, die schmerzlich vertraut geblieben sind:" data-en="They ask questions that remain painfully familiar:">They ask questions that remain painfully familiar:</p>
-<p data-de="Was bedeutet es, irgendwo dazuzugehören?" data-en="What does it mean to belong somewhere?">What does it mean to belong somewhere?</p>
-<p data-de="Was bleibt, wenn der Boden unter einem wegbricht?" data-en="What remains when the ground shifts?">What remains when the ground shifts?</p>
-<p data-de="Wie bleibt man innerlich ehrlich, wenn Zugehörigkeit kompliziert wird?" data-en="How does one stay internally honest when belonging becomes complicated?">How does one stay internally honest when belonging becomes complicated?</p>
-<p data-de="Das Album präsentiert die Gedichte nicht als isolierte Literaturwerke, sondern als Teile einer größeren inneren Reise. Es versucht nicht, Geschichte zu erklären oder Nationen zu beurteilen. Stattdessen schafft es Raum für Nachdenken — eine Einladung, mit Komplexität zu sitzen, anstatt sie aufzulösen." data-en="The album presents the poems not as isolated literary works but as parts of a larger inner journey. It does not attempt to explain history or judge nations. Instead, it creates space for reflection — an invitation to sit with complexity rather than resolve it.">The album presents the poems not as isolated literary works but as parts of a larger inner journey. It does not attempt to explain history or judge nations. Instead, it creates space for reflection — an invitation to sit with complexity rather than resolve it.</p>
+      <h2 class="section-title">Why this album exists</h2>
+      <p>The album brings together poems by Rose Ausländer, Theodor Kramer, Mimi Grossberg, Paul Elbogen, Jura Soyfer, and Erich Fried — writers whose lives and work were shaped by exile, displacement, and the upheavals of the twentieth century.</p>
+<p>What surprised us while working with these texts was how little had aged.</p>
+<p>They ask questions that remain painfully familiar:</p>
+<p>What does it mean to belong somewhere?</p>
+<p>What remains when the ground shifts?</p>
+<p>How does one stay internally honest when belonging becomes complicated?</p>
+<p>The album presents the poems not as isolated literary works but as parts of a larger inner journey. It does not attempt to explain history or judge nations. Instead, it creates space for reflection — an invitation to sit with complexity rather than resolve it.</p>
     </div>
     <div>
-      <p class="why-pull" data-de="Der zentrale Gedanke ist die Weigerung zur Vereinfachung — Menschen, die auf Nationalität reduziert werden, Identität, die auf Schlagworte reduziert wird, Geschichte, die auf klare Narrative reduziert wird." data-en="The central idea is the refusal of simplification — people reduced to nationality, identity reduced to labels, history reduced to clear narratives.">The central idea is the refusal of simplification — people reduced to nationality, identity reduced to labels, history reduced to clear narratives.</p>
+      <p class="why-pull">The central idea is the refusal of simplification — people reduced to nationality, identity reduced to labels, history reduced to clear narratives.</p>
       <div class="stages">
-        <div class="stage"><span class="stage-num">I</span><div><div class="stage-title" data-de="Erwachen" data-en="Awakening">Awakening</div><div class="stage-desc">Nachtflug — Mimi Grossberg</div></div></div>
-        <div class="stage"><span class="stage-num">II</span><div><div class="stage-title" data-de="Konformität" data-en="Conformity">Conformity</div><div class="stage-desc">Das laufende Band — Rose Ausländer</div></div></div>
-        <div class="stage"><span class="stage-num">III</span><div><div class="stage-title" data-de="Entwurzelung" data-en="Displacement">Displacement</div><div class="stage-desc">Der Emigrant — Paul Elbogen</div></div></div>
-        <div class="stage"><span class="stage-num">IV</span><div><div class="stage-title" data-de="Nähe" data-en="Intimacy">Intimacy</div><div class="stage-desc">Marie — Theodor Kramer</div></div></div>
-        <div class="stage"><span class="stage-num">V</span><div><div class="stage-title" data-de="Geschichtsbewusstsein" data-en="Historical Awareness">Historical Awareness</div><div class="stage-desc">Denn nahe, viel näher — Yura Soyfer</div></div></div>
-        <div class="stage"><span class="stage-num">VI</span><div><div class="stage-title" data-de="Annahme der Vielschichtigkeit" data-en="Acceptance of Complexity">Acceptance of Complexity</div><div class="stage-desc">Dich — Erich Fried</div></div></div>
+        <div class="stage"><span class="stage-num">I</span><div><div class="stage-title">Awakening</div><div class="stage-desc">Nachtflug — Mimi Grossberg</div></div></div>
+        <div class="stage"><span class="stage-num">II</span><div><div class="stage-title">Conformity</div><div class="stage-desc">Das laufende Band — Rose Ausländer</div></div></div>
+        <div class="stage"><span class="stage-num">III</span><div><div class="stage-title">Displacement</div><div class="stage-desc">Der Emigrant — Paul Elbogen</div></div></div>
+        <div class="stage"><span class="stage-num">IV</span><div><div class="stage-title">Intimacy</div><div class="stage-desc">Marie — Theodor Kramer</div></div></div>
+        <div class="stage"><span class="stage-num">V</span><div><div class="stage-title">Historical Awareness</div><div class="stage-desc">Denn nahe, viel näher — Yura Soyfer</div></div></div>
+        <div class="stage"><span class="stage-num">VI</span><div><div class="stage-title">Acceptance of Complexity</div><div class="stage-desc">Dich — Erich Fried</div></div></div>
       </div>
     </div>
   </div>
 </section>
 
 <section id="music">
-  <span class="section-label" data-de="Der Klang" data-en="The Sound">The Sound</span>
-  <h2 class="section-title" data-de="Musik aus vielen Welten" data-en="Music from many places">Music from many places</h2>
+  <span class="section-label">The Sound</span>
+  <h2 class="section-title">Music from many places</h2>
   <div class="music-text">
-    <p data-de="Europa war schon immer ein Ort der Bewegung — Menschen, die reisten, sich niederließen, ihre Sprachen und Traditionen mitbrachten und sie mit dem vermischten, was sie vorfanden. Die Musiker·innen dieses Albums sind Teil dieser Geschichte. Verschiedene Hintergründe, verschiedene Wege, verschiedene Dinge, die mitgenommen oder zurückgelassen wurden. Daher kommt der Klang." data-en="Europe has always been a place of movement — people travelling, settling, carrying their languages and traditions with them, mixing them with what they found. The musicians who made this album are part of that story. Different backgrounds, different routes, different things brought along and left behind. That is where the sound comes from.">Europe has always been a place of movement — people travelling, settling, carrying their languages and traditions with them, mixing them with what they found. The musicians who made this album are part of that story. Different backgrounds, different routes, different things brought along and left behind. That is where the sound comes from.</p>
-    <p data-de="Die Texte haben die Musik genauso geprägt wie die Musiker·innen selbst. Jedes Gedicht schlug etwas vor — ein Tempo, eine Textur, ein Gefühl, das sich nicht ganz benennen, aber spielen ließ. Die Musiker·innen hörten diese Vorschläge und folgten ihnen, fanden Verbindungen zwischen dem, was die Dichter·innen geschrieben hatten, und dem, was sie selbst immer in sich getragen hatten. Das Ergebnis ist etwas, das zu keiner einzigen Tradition gehört — und zu allen zugleich." data-en="The texts shaped the music as much as the musicians did. Each poem suggested something — a tempo, a texture, a feeling that couldn't quite be named but could be played. The musicians heard those suggestions and followed them, finding connections between what the poets had written and what they themselves had always carried. The result is something that belongs to no single tradition, and to all of them at once.">The texts shaped the music as much as the musicians did. Each poem suggested something — a tempo, a texture, a feeling that couldn't quite be named but could be played. The musicians heard those suggestions and followed them, finding connections between what the poets had written and what they themselves had always carried. The result is something that belongs to no single tradition, and to all of them at once.</p>
+    <p>Europe has always been a place of movement — people travelling, settling, carrying their languages and traditions with them, mixing them with what they found. The musicians who made this album are part of that story. Different backgrounds, different routes, different things brought along and left behind. That is where the sound comes from.</p>
+    <p>The texts shaped the music as much as the musicians did. Each poem suggested something — a tempo, a texture, a feeling that couldn't quite be named but could be played. The musicians heard those suggestions and followed them, finding connections between what the poets had written and what they themselves had always carried. The result is something that belongs to no single tradition, and to all of them at once.</p>
   </div>
 </section>
 
 <section id="poets">
-  <span class="section-label" data-de="Die Stimmen" data-en="The Voices">The Voices</span>
-  <h2 class="section-title" data-de="Sechs Dichter·innen. Ein Jahrhundert." data-en="Six poets. One century.">Six poets. One century.</h2>
+  <span class="section-label">The Voices</span>
+  <h2 class="section-title">Six poets. One century.</h2>
   <div class="poets-grid">
     <div class="poet-card">
       <div class="poet-name">Mimi Grossberg</div>
       <div class="poet-years">1905 – 1997</div>
-      <div class="poet-desc" data-de="In Wien geboren, emigrierte sie 1938 nach dem Anschluss nach New York. Dichterin, Prosaschriftstellerin und unermüdliche Kulturorganisatorin der österreichischen Exilliteratur in den USA. Ihr Gedicht <em>Nachtflug</em> hält einen Moment überwältigenden kosmischen Bewusstseins während eines frühen transatlantischen Fluges fest." data-en="Born in Vienna, she emigrated to New York in 1938 after the Anschluss. A poet, prose writer, and tireless cultural organiser of Austrian exile literature in the United States. Her poem <em>Nachtflug</em> captures a moment of overwhelming cosmic awareness during an early transatlantic flight.">Born in Vienna, she emigrated to New York in 1938 after the Anschluss. A poet, prose writer, and tireless cultural organiser of Austrian exile literature in the United States. Her poem <em>Nachtflug</em> captures a moment of overwhelming cosmic awareness during an early transatlantic flight.</div>
+      <div class="poet-desc">Born in Vienna, she emigrated to New York in 1938 after the Anschluss. A poet, prose writer, and tireless cultural organiser of Austrian exile literature in the United States. Her poem <em>Nachtflug</em> captures a moment of overwhelming cosmic awareness during an early transatlantic flight.</div>
       <div class="poet-links">
-        <a href="https://mimi-grossberg.zurerinnerung.at/" target="_blank" rel="noopener" class="poet-link" data-de="Gedenkseite ↗" data-en="Memorial site ↗">Memorial site ↗</a>
+        <a href="https://mimi-grossberg.zurerinnerung.at/" target="_blank" rel="noopener" class="poet-link">Memorial site ↗</a>
       </div>
     </div>
     <div class="poet-card">
       <div class="poet-name">Rose Ausländer</div>
       <div class="poet-years">1901 – 1988</div>
-      <div class="poet-desc" data-de="In Czernowitz (heute Ukraine) geboren, überlebte sie die NS-Besatzung versteckt in einem Keller. Sie ließ sich später in Düsseldorf nieder, wo sie ihre letzten Jahrzehnte in großer Schaffensfreude verbrachte. Eine der bedeutendsten deutschsprachigen Lyrikerinnen des zwanzigsten Jahrhunderts." data-en="Born in Czernowitz (now Ukraine), she survived the Nazi occupation hiding in a cellar. She later settled in Düsseldorf, where she spent her final decades writing prolifically. One of the great German-language lyric poets of the twentieth century.">Born in Czernowitz (now Ukraine), she survived the Nazi occupation hiding in a cellar. She later settled in Düsseldorf, where she spent her final decades writing prolifically. One of the great German-language lyric poets of the twentieth century.</div>
+      <div class="poet-desc">Born in Czernowitz (now Ukraine), she survived the Nazi occupation hiding in a cellar. She later settled in Düsseldorf, where she spent her final decades writing prolifically. One of the great German-language lyric poets of the twentieth century.</div>
       <div class="poet-links">
-        <a href="https://www.deutschelyrik.de/auslaender.html" target="_blank" rel="noopener" class="poet-link" data-de="Gedichte ↗" data-en="Poems ↗">Poems ↗</a>
-        <a href="https://www.fembio.org/biographie.php/frau/biographie/rose-auslaender/" target="_blank" rel="noopener" class="poet-link" data-de="Biografie ↗" data-en="Biography ↗">Biography ↗</a>
+        <a href="https://www.deutschelyrik.de/auslaender.html" target="_blank" rel="noopener" class="poet-link">Poems ↗</a>
+        <a href="https://www.fembio.org/biographie.php/frau/biographie/rose-auslaender/" target="_blank" rel="noopener" class="poet-link">Biography ↗</a>
       </div>
     </div>
     <div class="poet-card">
       <div class="poet-name">Paul Elbogen</div>
       <div class="poet-years">1894 – 1987</div>
-      <div class="poet-desc" data-de="In Wien geboren, war er Journalist, Romanautor und Dichter, der 1938 nach Frankreich floh und später nach Nordamerika emigrierte. <em>Der Emigrant</em>, 1941 im französischen Exil geschrieben, verbindet schwarzen Humor mit der schmerzlichen Realität erzwungener Vertreibung." data-en="Born in Vienna, he was a journalist, novelist, and poet who fled to France after 1938 and later emigrated to North America. <em>Der Emigrant</em>, written in exile in France in 1941, blends dark humour with the painful reality of forced displacement.">Born in Vienna, he was a journalist, novelist, and poet who fled to France after 1938 and later emigrated to North America. <em>Der Emigrant</em>, written in exile in France in 1941, blends dark humour with the painful reality of forced displacement.</div>
+      <div class="poet-desc">Born in Vienna, he was a journalist, novelist, and poet who fled to France after 1938 and later emigrated to North America. <em>Der Emigrant</em>, written in exile in France in 1941, blends dark humour with the painful reality of forced displacement.</div>
       <div class="poet-links">
-        <a href="https://austria-forum.org/af/Biographien/Elbogen%2C_Paul" target="_blank" rel="noopener" class="poet-link" data-de="Austria Forum ↗" data-en="Austria Forum ↗">Austria Forum ↗</a>
+        <a href="https://austria-forum.org/af/Biographien/Elbogen%2C_Paul" target="_blank" rel="noopener" class="poet-link">Austria Forum ↗</a>
       </div>
     </div>
     <div class="poet-card">
       <div class="poet-name">Theodor Kramer</div>
       <div class="poet-years">1897 – 1958</div>
-      <div class="poet-desc" data-de="In Niederhollabrunn (Niederösterreich) geboren, war er ein Dichter des Alltags, der Arbeitswelt und der Übersehenen. 1939 floh er nach England, wo er die Kriegsjahre in Armut und Isolation verbrachte, bevor er 1957 nach Wien zurückkehrte." data-en="Born in Niederhollabrunn, Austria, he was a poet of everyday life, working-class experience, and the overlooked. He fled to England in 1939, where he spent the war years in poverty and isolation before returning to Vienna in 1957.">Born in Niederhollabrunn, Austria, he was a poet of everyday life, working-class experience, and the overlooked. He fled to England in 1939, where he spent the war years in poverty and isolation before returning to Vienna in 1957.</div>
+      <div class="poet-desc">Born in Niederhollabrunn, Austria, he was a poet of everyday life, working-class experience, and the overlooked. He fled to England in 1939, where he spent the war years in poverty and isolation before returning to Vienna in 1957.</div>
       <div class="poet-links">
-        <a href="https://theodorkramer.at/tkg/theodor-kramer/biographie-und-werk/" target="_blank" rel="noopener" class="poet-link" data-de="Theodor Kramer Gesellschaft ↗" data-en="Theodor Kramer Gesellschaft ↗">Theodor Kramer Gesellschaft ↗</a>
+        <a href="https://theodorkramer.at/tkg/theodor-kramer/biographie-und-werk/" target="_blank" rel="noopener" class="poet-link">Theodor Kramer Gesellschaft ↗</a>
       </div>
     </div>
     <div class="poet-card">
       <div class="poet-name">Yura Soyfer</div>
       <div class="poet-years">1912 – 1939</div>
-      <div class="poet-desc" data-de="In Charkiw (Ukraine) geboren, wuchs er in Wien auf und wurde einer der begabtesten politischen Dramatiker und Dichter Österreichs. 1938 verhaftet, starb er mit 26 Jahren in Buchenwald. Sein Werk ist von unerbittlicher Klugheit, Humor und humanistischer Dringlichkeit geprägt." data-en="Born in Kharkov, Ukraine, he grew up in Vienna and became one of Austria's most gifted political playwrights and poets. Arrested in 1938, he died in Buchenwald at 26. His work is marked by fierce intelligence, humour, and humane urgency.">Born in Kharkov, Ukraine, he grew up in Vienna and became one of Austria's most gifted political playwrights and poets. Arrested in 1938, he died in Buchenwald at 26. His work is marked by fierce intelligence, humour, and humane urgency.</div>
+      <div class="poet-desc">Born in Kharkov, Ukraine, he grew up in Vienna and became one of Austria's most gifted political playwrights and poets. Arrested in 1938, he died in Buchenwald at 26. His work is marked by fierce intelligence, humour, and humane urgency.</div>
       <div class="poet-links">
-        <a href="https://www.soyfer.at/deutsch/index.htm" target="_blank" rel="noopener" class="poet-link" data-de="Soyfer Gesellschaft ↗" data-en="Soyfer Gesellschaft ↗">Soyfer Gesellschaft ↗</a>
-        <a href="https://www.projekt-gutenberg.org/autoren/namen/soyfer.html" target="_blank" rel="noopener" class="poet-link" data-de="Texte ↗" data-en="Texts ↗">Texts ↗</a>
+        <a href="https://www.soyfer.at/deutsch/index.htm" target="_blank" rel="noopener" class="poet-link">Soyfer Gesellschaft ↗</a>
+        <a href="https://www.projekt-gutenberg.org/autoren/namen/soyfer.html" target="_blank" rel="noopener" class="poet-link">Texts ↗</a>
       </div>
     </div>
     <div class="poet-card">
       <div class="poet-name">Erich Fried</div>
       <div class="poet-years">1921 – 1988</div>
-      <div class="poet-desc" data-de="In Wien geboren, floh er 1938 nach London, nachdem sein Vater von der Gestapo ermordet worden war. Er wurde einer der meistgelesenen deutschsprachigen Dichter der Nachkriegszeit — bekannt für Liebesgedichte von radikaler Zärtlichkeit und scharf politische Verse." data-en="Born in Vienna, he fled to London in 1938 after his father was killed by the Gestapo. He became one of the most widely read German-language poets of the postwar era — celebrated for love poetry of radical tenderness and sharply political verse.">Born in Vienna, he fled to London in 1938 after his father was killed by the Gestapo. He became one of the most widely read German-language poets of the postwar era — celebrated for love poetry of radical tenderness and sharply political verse.</div>
+      <div class="poet-desc">Born in Vienna, he fled to London in 1938 after his father was killed by the Gestapo. He became one of the most widely read German-language poets of the postwar era — celebrated for love poetry of radical tenderness and sharply political verse.</div>
       <div class="poet-links">
-        <a href="https://erich-fried-gesellschaft.at/" target="_blank" rel="noopener" class="poet-link" data-de="Erich Fried Gesellschaft ↗" data-en="Erich Fried Gesellschaft ↗">Erich Fried Gesellschaft ↗</a>
+        <a href="https://erich-fried-gesellschaft.at/" target="_blank" rel="noopener" class="poet-link">Erich Fried Gesellschaft ↗</a>
       </div>
     </div>
   </div>
 </section>
 
 <section id="tracklist">
-  <span class="section-label" data-de="Das Album" data-en="The Album">The Album</span>
-  <h2 class="section-title" data-de="Sechs Lieder" data-en="Six songs">Six songs</h2>
+  <span class="section-label">The Album</span>
+  <h2 class="section-title">Six songs</h2>
   <div class="track-list">
 
     <div class="track-item">
       <button class="track-header" onclick="toggleTrack(this)" aria-expanded="false">
         <span class="track-num">01</span>
         <div class="track-info"><div class="track-title">Nachtflug</div><div class="track-author">Mimi Grossberg</div></div>
-        <span class="track-stage" data-de="I — Erwachen" data-en="I — Awakening">I — Awakening</span>
+        <span class="track-stage">I — Awakening</span>
         <span class="track-toggle" aria-hidden="true">+</span>
       </button>
       <div class="track-poem">
         <div class="track-poem-inner">
           <div class="poem-legend">
-            <div class="legend-item"><span class="legend-line"></span> <span data-de="Originalgedicht" data-en="Original poem">Original poem</span></div>
-            <div class="legend-item"><span class="legend-bar"></span> <span data-de="Ergänzt von Lelio" data-en="Added by Lelio">Added by Lelio</span></div>
+            <div class="legend-item"><span class="legend-line"></span> Original poem</div>
+            <div class="legend-item"><span class="legend-bar"></span> Added by Lelio</div>
           </div>
           <div class="poem-text"><span class="poem-original">Ich fliege an den Rand der Zeit,
 nah, wie noch nie,
@@ -558,14 +518,14 @@ der Ewigkeit.</span></div>
       <button class="track-header" onclick="toggleTrack(this)" aria-expanded="false">
         <span class="track-num">02</span>
         <div class="track-info"><div class="track-title">Das laufende Band</div><div class="track-author">Rose Ausländer</div></div>
-        <span class="track-stage" data-de="II — Konformität" data-en="II — Conformity">II — Conformity</span>
+        <span class="track-stage">II — Conformity</span>
         <span class="track-toggle" aria-hidden="true">+</span>
       </button>
       <div class="track-poem">
         <div class="track-poem-inner">
           <div class="poem-legend">
-            <div class="legend-item"><span class="legend-line"></span> <span data-de="Originalgedicht" data-en="Original poem">Original poem</span></div>
-            <div class="legend-item"><span class="legend-bar"></span> <span data-de="Ergänzt von Lelio" data-en="Added by Lelio">Added by Lelio</span></div>
+            <div class="legend-item"><span class="legend-line"></span> Original poem</div>
+            <div class="legend-item"><span class="legend-bar"></span> Added by Lelio</div>
           </div>
           <div class="poem-text"><span class="poem-original">Wir brauchen keine Berge,
 die plump und müßig stehn.
@@ -610,16 +570,16 @@ zum laufenden Band.</span></div>
       <button class="track-header" onclick="toggleTrack(this)" aria-expanded="false">
         <span class="track-num">03</span>
         <div class="track-info"><div class="track-title">Der Emigrant</div><div class="track-author">Paul Elbogen</div></div>
-        <span class="track-stage" data-de="III — Entwurzelung" data-en="III — Displacement">III — Displacement</span>
+        <span class="track-stage">III — Displacement</span>
         <span class="track-toggle" aria-hidden="true">+</span>
       </button>
       <div class="track-poem">
         <div class="track-poem-inner">
           <div class="poem-legend">
-            <div class="legend-item"><span class="legend-line"></span> <span data-de="Originalgedicht" data-en="Original poem">Original poem</span></div>
-            <div class="legend-item"><span class="legend-bar"></span> <span data-de="Ergänzt von Lelio" data-en="Added by Lelio">Added by Lelio</span></div>
+            <div class="legend-item"><span class="legend-line"></span> Original poem</div>
+            <div class="legend-item"><span class="legend-bar"></span> Added by Lelio</div>
           </div>
-          <div class="poem-text"><span class="poem-note" data-de="Tragisches Scherzgedicht, geschrieben in Frankreich, 1941" data-en="Tragisches Scherzgedicht, written in France, 1941">Tragisches Scherzgedicht, written in France, 1941</span><span class="poem-original">Jeder Mensch, auch Goethe, auch Homer,
+          <div class="poem-text"><span class="poem-note">Tragisches Scherzgedicht, written in France, 1941</span><span class="poem-original">Jeder Mensch, auch Goethe, auch Homer,
 Den man in ein fremdes Land verbannt,
 Wird, wenn's Portemonnaie wird hastig leer,
 Ein Emigrant. Der Emigrant.
@@ -658,14 +618,14 @@ Wir sind Emigrantinnen der Welt.</span></div>
       <button class="track-header" onclick="toggleTrack(this)" aria-expanded="false">
         <span class="track-num">04</span>
         <div class="track-info"><div class="track-title">Marie</div><div class="track-author">Theodor Kramer</div></div>
-        <span class="track-stage" data-de="IV — Nähe" data-en="IV — Intimacy">IV — Intimacy</span>
+        <span class="track-stage">IV — Intimacy</span>
         <span class="track-toggle" aria-hidden="true">+</span>
       </button>
       <div class="track-poem">
         <div class="track-poem-inner">
           <div class="poem-legend">
-            <div class="legend-item"><span class="legend-line"></span> <span data-de="Originalgedicht" data-en="Original poem">Original poem</span></div>
-            <div class="legend-item"><span class="legend-bar"></span> <span data-de="Ergänzt von Lelio" data-en="Added by Lelio">Added by Lelio</span></div>
+            <div class="legend-item"><span class="legend-line"></span> Original poem</div>
+            <div class="legend-item"><span class="legend-bar"></span> Added by Lelio</div>
           </div>
           <div class="poem-text"><span class="poem-original">Komm und rück zu mir, Marie,
 laß uns liegen Knie an Knie,
@@ -702,7 +662,7 @@ hörst du mi'?</span></div>
       <button class="track-header" onclick="toggleTrack(this)" aria-expanded="false">
         <span class="track-num">05</span>
         <div class="track-info"><div class="track-title">Denn nahe, viel näher</div><div class="track-author">Yura Soyfer</div></div>
-        <span class="track-stage" data-de="V — Geschichtsbewusstsein" data-en="V — Awareness">V — Awareness</span>
+        <span class="track-stage">V — Awareness</span>
         <span class="track-toggle" aria-hidden="true">+</span>
       </button>
       <div class="track-poem">
@@ -732,7 +692,7 @@ Ich sah, wie sie zwischen den Staaten schon reift.</span></div>
       <button class="track-header" onclick="toggleTrack(this)" aria-expanded="false">
         <span class="track-num">06</span>
         <div class="track-info"><div class="track-title">Dich</div><div class="track-author">Erich Fried</div></div>
-        <span class="track-stage" data-de="VI — Vielschichtigkeit" data-en="VI — Complexity">VI — Complexity</span>
+        <span class="track-stage">VI — Complexity</span>
         <span class="track-toggle" aria-hidden="true">+</span>
       </button>
       <div class="track-poem">
@@ -789,8 +749,8 @@ gar nicht so schwer</span></div>
 </section>
 
 <section id="musicians">
-  <span class="section-label" data-de="Die Musiker·innen" data-en="The Musicians">The Musicians</span>
-  <h2 class="section-title" data-de="Die Menschen hinter der Musik" data-en="The people behind the music">The people behind the music</h2>
+  <span class="section-label">The Musicians</span>
+  <h2 class="section-title">The people behind the music</h2>
 
   <div class="band-photo-wrap">
     <img src="images/photo-ensemble.jpg" alt="The Lelio ensemble in the studio" />
@@ -801,8 +761,8 @@ gar nicht so schwer</span></div>
       <div class="musician-photo"><img src="images/photo-polina.jpg" alt="Polina Vinogradova at the microphone" /></div>
       <div class="musician-info">
         <div class="musician-name">Polina Vinogradova</div>
-        <div class="musician-role" data-de="Gesang" data-en="Voice">Voice</div>
-        <div class="musician-bio" data-de="Polina Vinogradova ist UX/UI-Designerin und Content-Strategin mit fast einem Jahrzehnt Erfahrung in Branding, Marketing, User Experience und der Entwicklung von Software-Oberflächen. Musik war immer Teil ihres Lebens. Gemeinsam mit Simon Reithofer gründete sie 2019 die Musikgruppe Leliafan und später Lelio — eine neue künstlerische Richtung, verwurzelt in der österreichischen Exilliteratur." data-en="Polina Vinogradova is a UX/UI designer and content strategist with nearly a decade of experience in branding, marketing, user experience, and software interface development. Music has always been part of her life. Together with Simon Reithofer she co-founded the music group Leliafan in 2019, and later Lelio — a new artistic direction rooted in Austrian exile literature.">Polina Vinogradova is a UX/UI designer and content strategist with nearly a decade of experience in branding, marketing, user experience, and software interface development. Music has always been part of her life. Together with Simon Reithofer she co-founded the music group Leliafan in 2019, and later Lelio — a new artistic direction rooted in Austrian exile literature.</div>
+        <div class="musician-role">Voice</div>
+        <div class="musician-bio">Polina Vinogradova is a UX/UI designer and content strategist with nearly a decade of experience in branding, marketing, user experience, and software interface development. Music has always been part of her life. Together with Simon Reithofer she co-founded the music group Leliafan in 2019, and later Lelio — a new artistic direction rooted in Austrian exile literature.</div>
         <div class="musician-links">
           <a href="https://www.instagram.com/povinogradova" target="_blank" rel="noopener" class="musician-link">Instagram ↗</a>
         </div>
@@ -812,8 +772,8 @@ gar nicht so schwer</span></div>
       <div class="musician-photo"><img src="images/photo-simon.jpg" alt="Simon Reithofer playing guitar" /></div>
       <div class="musician-info">
         <div class="musician-name">Simon Reithofer</div>
-        <div class="musician-role" data-de="Gitarre &amp; Banjo" data-en="Guitar &amp; Banjo">Guitar &amp; Banjo</div>
-        <div class="musician-bio" data-de="Simon Reithofer ist Musikwissenschaftler, Jazzgitarrist und Instrumentalpädagoge in Graz. Sein musikalischer Schwerpunkt liegt im Jazz der 1920er bis 40er Jahre und der Musik Django Reinhardts, und reicht bis zu Klezmer, traditionellen Romasongs und arabischer Musik. Er ist in ganz Europa und Zentralasien aufgetreten." data-en="Simon Reithofer is a musicologist, jazz guitarist, and instrumental pedagogue based in Graz. His musical focus spans jazz of the 1920s–40s and the music of Django Reinhardt, extending into Klezmer, traditional Romani songs, and Arabic music. He has performed across Europe and Central Asia.">Simon Reithofer is a musicologist, jazz guitarist, and instrumental pedagogue based in Graz. His musical focus spans jazz of the 1920s–40s and the music of Django Reinhardt, extending into Klezmer, traditional Romani songs, and Arabic music. He has performed across Europe and Central Asia.</div>
+        <div class="musician-role">Guitar &amp; Banjo</div>
+        <div class="musician-bio">Simon Reithofer is a musicologist, jazz guitarist, and instrumental pedagogue based in Graz. His musical focus spans jazz of the 1920s–40s and the music of Django Reinhardt, extending into Klezmer, traditional Romani songs, and Arabic music. He has performed across Europe and Central Asia.</div>
         <div class="musician-links">
           <a href="http://www.simon-reithofer.com/home/" target="_blank" rel="noopener" class="musician-link">Website ↗</a>
         </div>
@@ -823,16 +783,16 @@ gar nicht so schwer</span></div>
       <div class="musician-photo"><img src="images/photo-bernd.jpg" alt="Bernd Kohlhofer playing accordion" /></div>
       <div class="musician-info">
         <div class="musician-name">Bernd Kohlhofer</div>
-        <div class="musician-role" data-de="Akkordeon" data-en="Accordion">Accordion</div>
-        <div class="musician-bio" data-de="Bernd Kohlhofer ist österreichischer Akkordeonist und Pädagoge, bekannt für seine stilistische Bandbreite in klassischer Musik, Jazz und Weltmusik. Ausgebildet an der Musikschule Gleisdorf und der Kunstuniversität Graz, tritt er mit Ensembles wie dem Mosaic Trio und der Adana Klezmer Band auf und verbindet Klezmer, Tango Nuevo und Balkanrhythmen mit moderner Improvisation." data-en="Bernd Kohlhofer is an Austrian accordionist and pedagogue known for his stylistic range across classical, jazz, and world music. Trained at the Musikschule Gleisdorf and the University of Music and Performing Arts Graz, he performs with ensembles including the Mosaic Trio and the Adana Klezmer Band, combining Klezmer, Tango Nuevo, and Balkan rhythms with modern improvisation.">Bernd Kohlhofer is an Austrian accordionist and pedagogue known for his stylistic range across classical, jazz, and world music. Trained at the Musikschule Gleisdorf and the University of Music and Performing Arts Graz, he performs with ensembles including the Mosaic Trio and the Adana Klezmer Band, combining Klezmer, Tango Nuevo, and Balkan rhythms with modern improvisation.</div>
+        <div class="musician-role">Accordion</div>
+        <div class="musician-bio">Bernd Kohlhofer is an Austrian accordionist and pedagogue known for his stylistic range across classical, jazz, and world music. Trained at the Musikschule Gleisdorf and the University of Music and Performing Arts Graz, he performs with ensembles including the Mosaic Trio and the Adana Klezmer Band, combining Klezmer, Tango Nuevo, and Balkan rhythms with modern improvisation.</div>
       </div>
     </div>
     <div class="musician-card">
       <div class="musician-photo"><img src="images/photo-michael.jpg" alt="Michael Leitner playing violin" /></div>
       <div class="musician-info">
         <div class="musician-name">Michael Leitner</div>
-        <div class="musician-role" data-de="Violine" data-en="Violin">Violin</div>
-        <div class="musician-bio" data-de="Biografie folgt in Kürze." data-en="Bio coming soon.">Bio coming soon.</div>
+        <div class="musician-role">Violin</div>
+        <div class="musician-bio">Bio coming soon.</div>
         <div class="musician-links">
           <a href="https://www.instagram.com/leitnermichael80" target="_blank" rel="noopener" class="musician-link">Instagram ↗</a>
         </div>
@@ -842,7 +802,7 @@ gar nicht so schwer</span></div>
       <div class="musician-photo"><img src="images/photo-lukas.jpg" alt="Lukas Straußberger playing double bass" /></div>
       <div class="musician-info">
         <div class="musician-name">Lukas Straußberger</div>
-        <div class="musician-role" data-de="Kontrabass" data-en="Double Bass">Double Bass</div>
+        <div class="musician-role">Double Bass</div>
         <div class="musician-bio">Bio coming soon.</div>
       </div>
     </div>
@@ -851,26 +811,26 @@ gar nicht so schwer</span></div>
   <div class="recording-block">
     <div class="recording-bg"></div>
     <div class="recording-content">
-      <span class="recording-label" data-de="Aufgenommen bei" data-en="Recorded at">Recorded at</span>
+      <span class="recording-label">Recorded at</span>
       <div class="recording-name"><a href="https://www.audiotope.at/" target="_blank" rel="noopener">Audiotope Studios, Graz ↗</a></div>
-      <div class="recording-desc" data-de="Aufnahme, Abmischung, Audio-Postproduktion und Mastering." data-en="Recording, mixing, audio post-production and mastering.">Recording, mixing, audio post-production and mastering.</div>
+      <div class="recording-desc">Recording, mixing, audio post-production and mastering.</div>
     </div>
   </div>
 </section>
 
 <section id="listen">
-  <span class="section-label" data-de="Anhören" data-en="Listen">Listen</span>
-  <h2 class="section-title" data-de="Die Musik hören" data-en="Hear the music">Hear the music</h2>
+  <span class="section-label">Listen</span>
+  <h2 class="section-title">Hear the music</h2>
   <div class="listen-coming">
-    <div class="listen-coming-title" data-de="Demnächst" data-en="Coming soon">Coming soon</div>
-    <div class="listen-coming-desc" data-de="Das Album wird auf allen großen Streaming-Plattformen verfügbar sein." data-en="The album will be available on all major streaming platforms.">The album will be available on all major streaming platforms.</div>
+    <div class="listen-coming-title">Coming soon</div>
+    <div class="listen-coming-desc">The album will be available on all major streaming platforms.</div>
   </div>
 </section>
 
 <section id="support">
-  <span class="section-label" data-de="Mit Unterstützung von" data-en="With Support From">With Support From</span>
-  <h2 class="section-title" data-de="Danke" data-en="Thank you">Thank you</h2>
-  <p class="support-text" data-de="Lelio wurde ermöglicht durch die großzügige Unterstützung des Bundesministeriums für Kunst, Kultur, öffentlichen Dienst und Sport sowie der Stadt Graz. Wir sind dankbar für ihr Engagement für das kulturelle Leben und für die Stimmen, die es verdienen, gehört zu werden." data-en="Lelio was made possible with the generous support of the Austrian Federal Ministry of Arts, Culture, Civil Service and Sport, and the City of Graz. We are grateful for their commitment to cultural life and to the voices that deserve to be heard.">Lelio was made possible with the generous support of the Austrian Federal Ministry of Arts, Culture, Civil Service and Sport, and the City of Graz. We are grateful for their commitment to cultural life and to the voices that deserve to be heard.</p>
+  <span class="section-label">With Support From</span>
+  <h2 class="section-title">Thank you</h2>
+  <p class="support-text">Lelio was made possible with the generous support of the Austrian Federal Ministry of Arts, Culture, Civil Service and Sport, and the City of Graz. We are grateful for their commitment to cultural life and to the voices that deserve to be heard.</p>
   <div class="support-logos">
     <img src="images/logo-bmwkms.jpg" alt="Bundesministerium für Kunst, Kultur, öffentlichen Dienst und Sport" class="support-logo-img" />
     <img src="images/logo-stadtgraz.jpg" alt="Stadt Graz" class="support-logo-img" />
@@ -878,10 +838,10 @@ gar nicht so schwer</span></div>
 </section>
 
 <section id="contact">
-  <span class="section-label" data-de="Kontakt" data-en="Contact">Contact</span>
-  <h2 class="section-title" data-de="Schreibt uns" data-en="Get in touch">Get in touch</h2>
+  <span class="section-label">Contact</span>
+  <h2 class="section-title">Get in touch</h2>
   <a href="/cdn-cgi/l/email-protection#aedec1d8c7c0c1c9dccfcac1d8cfeec9c3cfc7c280cdc1c3" class="contact-email"><span class="__cf_email__" data-cfemail="88f8e7fee1e6e7effae9ece7fee9c8efe5e9e1e4a6ebe7e5">[email&#160;protected]</span></a>
-  <p class="contact-note" data-de="Für Buchungsanfragen, Presseanfragen oder sonstige Fragen zum Projekt." data-en="For bookings, press enquiries, or any questions about the project.">For bookings, press enquiries, or any questions about the project.</p>
+  <p class="contact-note">For bookings, press enquiries, or any questions about the project.</p>
 </section>
 
 <footer>
@@ -897,7 +857,7 @@ gar nicht so schwer</span></div>
     menuToggle.addEventListener('click', () => {
       const isOpen = nav.classList.toggle('menu-open');
       menuToggle.setAttribute('aria-expanded', String(isOpen));
-      menuToggle.setAttribute('aria-label', isOpen ? (document.documentElement.lang==='de'?'Menü schließen':'Close menu') : (document.documentElement.lang==='de'?'Menü öffnen':'Open menu'));
+      menuToggle.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
     });
     navLinks.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
@@ -933,96 +893,6 @@ gar nicht so schwer</span></div>
       }, 20);
     }
   }
-
-
-  // ── Language picker ──
-  const LANG_KEY = 'lelio-lang';
-  const LANGUAGES = {
-    en: { label: 'EN', name: 'English' },
-    de: { label: 'DE', name: 'Deutsch' }
-    // Add more here: fr: { label: 'FR', name: 'Français' }
-  };
-
-  const langTrigger = document.getElementById('lang-trigger');
-  const langDropdown = document.getElementById('lang-dropdown');
-
-  // Toggle dropdown open/close
-  langTrigger && langTrigger.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const isOpen = langTrigger.getAttribute('aria-expanded') === 'true';
-    langTrigger.setAttribute('aria-expanded', String(!isOpen));
-  });
-
-  // Close dropdown when clicking outside
-  document.addEventListener('click', () => {
-    if (langTrigger) langTrigger.setAttribute('aria-expanded', 'false');
-  });
-
-  // Close on Escape
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && langTrigger) langTrigger.setAttribute('aria-expanded', 'false');
-  });
-
-  function setLang(lang) {
-    if (!LANGUAGES[lang]) return;
-    document.documentElement.lang = lang;
-    try { localStorage.setItem(LANG_KEY, lang); } catch(e) {}
-
-    // Update trigger label
-    const trigLabel = document.getElementById('lang-trigger-label');
-    if (trigLabel) trigLabel.textContent = LANGUAGES[lang].label;
-
-    // Update dropdown options
-    Object.keys(LANGUAGES).forEach(l => {
-      const opt = document.getElementById('opt-' + l);
-      if (opt) {
-        opt.classList.toggle('active', l === lang);
-        opt.setAttribute('aria-selected', l === lang ? 'true' : 'false');
-      }
-    });
-
-    // Update mobile buttons
-    const bdem = document.getElementById('btn-de-m');
-    const benm = document.getElementById('btn-en-m');
-    if (bdem) bdem.classList.toggle('active', lang === 'de');
-    if (benm) benm.classList.toggle('active', lang === 'en');
-
-    // Swap all data-[lang] text content
-    document.querySelectorAll('[data-de]').forEach(el => {
-      const val = el.getAttribute('data-' + lang);
-      if (val !== null) el.innerHTML = val;
-    });
-
-    // Swap aria-labels
-    document.querySelectorAll('[data-aria-de]').forEach(el => {
-      const val = el.getAttribute('data-aria-' + lang);
-      if (val) el.setAttribute('aria-label', val);
-    });
-
-    // Menu toggle aria-label
-    const toggle = document.querySelector('.menu-toggle');
-    if (toggle) {
-      const isOpen = nav.classList.contains('menu-open');
-      toggle.setAttribute('aria-label', lang === 'de'
-        ? (isOpen ? 'Menü schließen' : 'Menü öffnen')
-        : (isOpen ? 'Close menu' : 'Open menu'));
-    }
-  }
-
-  function setLangClose(lang) {
-    setLang(lang);
-    // Close dropdown and burger
-    if (langTrigger) langTrigger.setAttribute('aria-expanded', 'false');
-    nav.classList.remove('menu-open');
-    menuToggle && menuToggle.setAttribute('aria-expanded', 'false');
-  }
-
-  // Init — default to English
-  (function() {
-    let saved = 'en';
-    try { saved = localStorage.getItem(LANG_KEY) || 'en'; } catch(e) {}
-    setLang(saved);
-  })();
 
   let lastScroll = 0;
   window.addEventListener('scroll', () => {
