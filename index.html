@@ -755,7 +755,7 @@ gar nicht so schwer</span></div>
 
   <div class="rights-notice">
     <span class="rights-notice-label">Hinweis zu Textrechten</span>
-    <p>Die folgenden Texte sind lizenzpflichtig: „Der Emigrant" von Paul Elbogen, „Dich" von Erich Fried. Wir haben alle uns bekannten Stellen kontaktiert, um die Rechteinhaberinnen und Rechtsinhaber ausfindig zu machen, bisher jedoch keine Antwort erhalten. Unser Projekt ist nicht kommerziell. Sollten Sie die Rechte an einem dieser Texte halten oder verwalten, bitten wir Sie herzlich, sich mit uns in Verbindung zu setzen, damit wir eine Spende an Ihre Gesellschaft leisten bzw. eine angemessene Lizenzgebühr für die Nutzung des Textes in unserem Musikprojekt entrichten können. — <a href="/cdn-cgi/l/email-protection#5e2e3128373031392c3f3a31283f1e39333f3732703d3133"><span class="__cf_email__" data-cfemail="72021d041b1c1d150013161d041332151f131b1e5c111d1f">[email&#160;protected]</span></a></p>
+    <p>Die folgenden Texte sind lizenzpflichtig: „Der Emigrant" von Paul Elbogen, „Dich" von Erich Fried. Wir haben alle uns bekannten Stellen kontaktiert, um die Rechteinhaberinnen und Rechtsinhaber ausfindig zu machen, bisher jedoch keine Antwort erhalten. Unser Projekt ist nicht kommerziell. Sollten Sie die Rechte an einem dieser Texte halten oder verwalten, bitten wir Sie herzlich, sich mit uns in Verbindung zu setzen, damit wir eine Spende an Ihre Gesellschaft leisten bzw. eine angemessene Lizenzgebühr für die Nutzung des Textes in unserem Musikprojekt entrichten können. — <span id="rights-email-link">povinogradova@gmail.com</span></p>
   </div>
 </section>
 
@@ -851,14 +851,14 @@ gar nicht so schwer</span></div>
 <section id="contact">
   <span class="section-label">Kontakt</span>
   <h2 class="section-title">Schreibt uns</h2>
-  <a href="/cdn-cgi/l/email-protection#7c0c130a1512131b0e1d18130a1d3c1b111d1510521f1311" class="contact-email"><span class="__cf_email__" data-cfemail="ccbca3baa5a2a3abbeada8a3baad8caba1ada5a0e2afa3a1">[email&#160;protected]</span></a>
+  <a href="#" class="contact-email" id="contact-email-link">povinogradova@gmail.com</a>
 </section>
 
 <footer>
   <span class="footer-copy">© 2026 Lelio</span>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
   const nav = document.getElementById('main-nav');
   const menuToggle = document.querySelector('.menu-toggle');
   const navLinks = document.getElementById('site-menu');
@@ -916,5 +916,18 @@ gar nicht so schwer</span></div>
     }
     lastScroll = currentScroll;
   });
+</script>
+
+<script>
+  // Set email links via JS to prevent any proxy obfuscation
+  (function() {
+    var u = 'povinogradova';
+    var d = 'gmail.com';
+    var e = u + '@' + d;
+    var cl = document.getElementById('contact-email-link');
+    if (cl) { cl.href = 'mailto:' + e; cl.textContent = e; }
+    var rl = document.getElementById('rights-email-link');
+    if (rl) { rl.innerHTML = '<a href="mailto:' + e + '" style="color:inherit">' + e + '</a>'; }
+  })();
 </script>
 </body>
