@@ -15,7 +15,7 @@
       --focus: #1d4ed8;
     }
     html { scroll-behavior: smooth; font-size: 20px; }
-    body { background: var(--white); color: var(--black); font-family: 'EB Garamond', Georgia, serif; font-size: 20px; line-height: 1.6; overflow-x: hidden; }
+    body { background: var(--white); color: var(--black); font-family: 'EB Garamond', Georgia, serif; font-size: 20px; line-height: 1.6; overflow-x: hidden; max-width: 100vw; }
     :focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
     .sr-only { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; }
 
@@ -186,7 +186,7 @@
     #contact { background:var(--black);color:var(--white); }
     #contact .section-label { color:rgba(255,255,255,0.45); }
     #contact .section-title { color:var(--white); }
-    .contact-email { font-family:'Playfair Display',serif;font-size:clamp(1.4rem,3vw,2.3rem);color:var(--white);text-decoration:none;font-style:italic;border-bottom:1px solid rgba(255,255,255,0.3);padding-bottom:0.2rem;transition:border-color 0.2s;display:inline-block; }
+    .contact-email { font-family:'Playfair Display',serif;font-size:clamp(1.4rem,3vw,2.3rem);color:var(--white);text-decoration:none;font-style:italic;border-bottom:1px solid rgba(255,255,255,0.3);padding-bottom:0.2rem;transition:border-color 0.2s;display:inline-block;word-break:break-all;max-width:100%; }
     .contact-email:hover { border-bottom-color:rgba(255,255,255,0.85); }
     .contact-note { font-size:1rem;color:rgba(255,255,255,0.45);margin-top:1.3rem;font-style:italic; }
 
