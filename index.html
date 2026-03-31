@@ -37,11 +37,16 @@
     nav.menu-open .menu-icon span:nth-child(3) { top:9px; transform:rotate(-45deg); }
 
     /* LANG SWITCH */
-    .lang-switch { display:flex;align-items:center;gap:0.3rem;margin-left:1.2rem; }
-    .lang-btn { background:none;border:none;font-family:'EB Garamond',serif;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;padding:0.15rem 0.25rem;color:var(--mid);transition:color 0.2s; }
-    .lang-btn.active { color:var(--black);font-weight:700; }
-    .lang-sep { color:var(--border);font-size:0.7rem;user-select:none; }
-    .lang-switch-mobile { display:none; }
+    .lang-dropdown { position:relative;margin-left:1.2rem; }
+    .lang-dropdown-mobile { display:none; }
+    .lang-current { background:none;border:1px solid var(--border);font-family:'EB Garamond',serif;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;padding:0.3rem 0.6rem;color:var(--black);display:flex;align-items:center;gap:0.35rem;transition:border-color 0.2s; }
+    .lang-current:hover { border-color:var(--black); }
+    .lang-current::after { content:'';border-left:3.5px solid transparent;border-right:3.5px solid transparent;border-top:4px solid currentColor;margin-top:1px; }
+    .lang-menu { display:none;position:absolute;top:calc(100% + 4px);right:0;background:var(--white);border:1px solid var(--border);list-style:none;min-width:100%;z-index:210;box-shadow:0 4px 12px rgba(0,0,0,0.08); }
+    .lang-dropdown.open .lang-menu { display:block; }
+    .lang-menu button { display:block;width:100%;background:none;border:none;font-family:'EB Garamond',serif;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;padding:0.5rem 0.7rem;color:var(--mid);text-align:left;transition:background 0.15s,color 0.15s; }
+    .lang-menu button:hover { background:rgba(26,26,26,0.05);color:var(--black); }
+    .lang-menu button.active { color:var(--black);font-weight:700; }
 
     /* HERO */
     #hero {
@@ -174,9 +179,15 @@
     #listen .section-title { color:var(--white); }
     .release-announcement { text-align:center; }
     .release-announcement .section-title { font-size:clamp(2.5rem,5vw,4rem);margin-bottom:1.5rem; }
-    .listen-coming { margin-top:1rem;display:inline-block;border:1px solid rgba(255,255,255,0.18);padding:3rem 3.5rem;text-align:center; }
+    .listen-coming { margin-top:1rem;display:inline-block;border:1px solid rgba(255,255,255,0.18);padding:1.5rem 3rem 1.8rem;text-align:center; }
     .listen-coming-title { font-family:'Playfair Display',serif;font-size:clamp(1.5rem,3vw,2.2rem);font-weight:700;font-style:italic;color:var(--white); }
     .listen-coming-desc { font-size:1.05rem;color:rgba(255,255,255,0.45);line-height:1.7;margin-top:0.6rem;max-width:580px; }
+    .platform-links { margin-top:0;display:flex;flex-direction:column;gap:0.9rem;align-items:center; }
+    .platform-row { display:flex;gap:0.8rem;flex-wrap:wrap;justify-content:center; }
+    .platform-link { display:inline-block;padding:0.7rem 1.8rem;border:1px solid rgba(255,255,255,0.35);color:var(--white);font-family:'EB Garamond',serif;font-size:0.82rem;letter-spacing:0.14em;text-transform:uppercase;text-decoration:none;transition:all 0.2s; }
+    .platform-link:hover { background:var(--white);color:var(--black); }
+    .platform-row-secondary .platform-link { border-color:rgba(255,255,255,0.18);color:rgba(255,255,255,0.6);font-size:0.75rem;padding:0.55rem 1.4rem; }
+    .platform-row-secondary .platform-link:hover { background:var(--white);color:var(--black); }
 
     /* SUPPORT */
     #support { background:var(--white); }
@@ -235,10 +246,12 @@
       nav.menu-open .nav-links { display:flex; }
       .nav-links li { border-top:1px solid var(--border); }
       .nav-links a { display:block; padding:0.95rem 1.1rem; font-size:0.95rem; letter-spacing:0.13em; border-bottom:none; }
-      .lang-switch-desktop { display:none; }
-      .lang-switch-mobile { display:block;list-style:none; }
-      .lang-switch { margin:0;padding:0.8rem 1.1rem;border-top:1px solid var(--border);justify-content:center; }
-      .lang-btn { font-size:1rem; }
+      .lang-dropdown-desktop { display:none; }
+      .lang-dropdown-mobile { display:block;list-style:none; }
+      .lang-dropdown-mobile .lang-dropdown { margin:0;padding:0.8rem 1.1rem;border-top:1px solid var(--border);display:flex;justify-content:center; }
+      .lang-dropdown-mobile .lang-current { font-size:1rem; }
+      .lang-dropdown-mobile .lang-menu { right:auto;left:50%;transform:translateX(-50%);bottom:calc(100% + 4px);top:auto;box-shadow:0 -4px 12px rgba(0,0,0,0.08); }
+      .lang-dropdown-mobile .lang-menu button { font-size:1rem;padding:0.6rem 1rem; }
       /* Content grids */
       .poets-grid { grid-template-columns:1fr 1fr; }
       .poet-card:nth-child(3n) { border-right:1px solid var(--border); }
@@ -348,33 +361,39 @@
 </head>
 <body>
 
-<nav id="main-nav" role="navigation" aria-label="Hauptnavigation" data-en-attr="aria-label:Main navigation">
-  <a class="nav-logo" href="#hero" aria-label="Lelio – zurück nach oben" data-en-attr="aria-label:Lelio – back to top">
+<nav id="main-nav" role="navigation" aria-label="Hauptnavigation" data-en-attr="aria-label:Main navigation" data-ru-attr="aria-label:Главная навигация">
+  <a class="nav-logo" href="#hero" aria-label="Lelio – zurück nach oben" data-en-attr="aria-label:Lelio – back to top" data-ru-attr="aria-label:Lelio – вернуться в начало">
     <img src="images/logo-lelio.png" alt="Lelio" />
   </a>
   <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Menü öffnen">
     <span class="menu-icon" aria-hidden="true"><span></span><span></span><span></span></span>
   </button>
   <ul class="nav-links" id="site-menu">
-    <li><a href="#why" data-en="About">Über das Projekt</a></li>
-    <li><a href="#music" data-en="Music">Musik</a></li>
-    <li><a href="#poets" data-en="Poets">Dichter·innen</a></li>
-    <li><a href="#tracklist">Tracks</a></li>
-    <li><a href="#musicians" data-en="Musicians">Musiker·innen</a></li>
-    <li><a href="#listen" data-en="Listen">Anhören</a></li>
-    <li><a href="#contact" data-en="Contact">Kontakt</a></li>
-    <li class="lang-switch-mobile">
-      <div class="lang-switch">
-        <button class="lang-btn active" data-lang="de" aria-label="Deutsch">DE</button>
-        <span class="lang-sep">/</span>
-        <button class="lang-btn" data-lang="en" aria-label="English">EN</button>
+    <li><a href="#why" data-en="About" data-ru="О проекте">Über das Projekt</a></li>
+    <li><a href="#music" data-en="Music" data-ru="Музыка">Musik</a></li>
+    <li><a href="#poets" data-en="Poets" data-ru="Поэты">Dichter·innen</a></li>
+    <li><a href="#tracklist" data-en="Tracks" data-ru="Треки">Tracks</a></li>
+    <li><a href="#musicians" data-en="Musicians" data-ru="Музыканты">Musiker·innen</a></li>
+    <li><a href="#listen" data-en="Listen" data-ru="Слушать">Anhören</a></li>
+    <li><a href="#contact" data-en="Contact" data-ru="Контакты">Kontakt</a></li>
+    <li class="lang-dropdown-mobile">
+      <div class="lang-dropdown">
+        <button class="lang-current" aria-expanded="false" aria-haspopup="true">DE</button>
+        <ul class="lang-menu" role="menu">
+          <li><button role="menuitem" class="active" data-lang="de">Deutsch</button></li>
+          <li><button role="menuitem" data-lang="en">English</button></li>
+          <li><button role="menuitem" data-lang="ru">Русский</button></li>
+        </ul>
       </div>
     </li>
   </ul>
-  <div class="lang-switch lang-switch-desktop">
-    <button class="lang-btn active" data-lang="de" aria-label="Deutsch">DE</button>
-    <span class="lang-sep">/</span>
-    <button class="lang-btn" data-lang="en" aria-label="English">EN</button>
+  <div class="lang-dropdown lang-dropdown-desktop">
+    <button class="lang-current" aria-expanded="false" aria-haspopup="true">DE</button>
+    <ul class="lang-menu" role="menu">
+      <li><button role="menuitem" class="active" data-lang="de">Deutsch</button></li>
+      <li><button role="menuitem" data-lang="en">English</button></li>
+      <li><button role="menuitem" data-lang="ru">Русский</button></li>
+    </ul>
   </div>
 </nav>
 
@@ -382,132 +401,142 @@
   <img class="hero-bg-logo" src="images/logo-lelio.png" alt="" aria-hidden="true" />
   <div class="hero-text">
     <h1 class="hero-title">Lelio</h1>
-    <p class="hero-tagline" data-en="Six songs. Six poets. A journey through memory, exile, and the refusal to simplify.">Sechs Lieder. Sechs Dichter·innen. Eine Reise durch Erinnerung, Exil und die Weigerung zur Vereinfachung.</p>
+    <p class="hero-tagline" data-en="Six songs. Six poets. A journey through memory, exile, and the refusal to simplify." data-ru="Шесть песен. Шесть поэтов. Путешествие сквозь память, изгнание и отказ от упрощений.">Sechs Lieder. Sechs Dichter·innen. Eine Reise durch Erinnerung, Exil und die Weigerung zur Vereinfachung.</p>
     <div class="hero-cta">
-      <a href="#listen" class="btn-primary" data-en="Listen">Anhören</a>
-      <a href="#why" class="btn-outline" data-en="About the project">Zum Projekt</a>
+      <a href="#listen" class="btn-primary" data-en="Listen" data-ru="Слушать">Anhören</a>
+      <a href="#why" class="btn-outline" data-en="About the project" data-ru="О проекте">Zum Projekt</a>
     </div>
   </div>
 </section>
 
 <section id="listen" class="release-announcement">
-  <span class="section-label" data-en="Release">Veröffentlichung</span>
-  <h2 class="section-title" data-en="March 31, 2026">31. März 2026</h2>
+  <span class="section-label" data-en="Release" data-ru="Выпуск">Veröffentlichung</span>
+  <h2 class="section-title" data-en="March 31, 2026" data-ru="31 марта 2026">31. März 2026</h2>
   <div class="listen-coming">
-    <div class="listen-coming-title" data-en="The wait is almost over.">Das Warten hat bald ein Ende.</div>
-    <div class="listen-coming-desc" data-en="Lelio will be released on March 31, 2026 — hopefully on all major streaming platforms.">Lelio erscheint am 31. März 2026 — voraussichtlich auf allen großen Streaming-Plattformen.</div>
+    <div class="platform-links">
+      <div class="platform-row">
+        <a href="https://open.spotify.com/album/3Br77PzB3WkKqTJN74YMHh" class="platform-link" target="_blank" rel="noopener">Spotify</a>
+        <a href="https://music.apple.com/at/album/lelio-die-weigerung-zur-vereinfachung-ep/1887496736" class="platform-link" target="_blank" rel="noopener">Apple Music</a>
+        <a href="https://music.youtube.com/playlist?list=OLAK5uy_lo5f-38hRxQLl02SYFLIUW3j46nIDFyU0&si=KxTLDoJFDreSj0lS" class="platform-link" target="_blank" rel="noopener">YouTube Music</a>
+      </div>
+      <div class="platform-row platform-row-secondary">
+        <a href="https://tidal.com/album/509855128/u" class="platform-link" target="_blank" rel="noopener">Tidal</a>
+        <a href="https://www.amazon.de/dp/B0GTQHTQ95?tag=feiyr-21" class="platform-link" target="_blank" rel="noopener">Amazon Music</a>
+        <a href="https://link.deezer.com/s/32RiTR6HB2IZGTVaQmsjM" class="platform-link" target="_blank" rel="noopener">Deezer</a>
+      </div>
+    </div>
   </div>
 </section>
 
 <section id="why">
-  <span class="section-label" data-en="The Project">Das Projekt</span>
+  <span class="section-label" data-en="The Project" data-ru="Проект">Das Projekt</span>
   <div class="why-grid">
     <div class="why-text">
-      <h2 class="section-title" data-en="Why this album exists">Warum dieses Album entstand</h2>
-      <p data-en="The album brings together poems by Rose Ausländer, Theodor Kramer, Mimi Grossberg, Paul Elbogen, Jura Soyfer, and Erich Fried — writers whose lives and work were shaped by exile, displacement, and the upheavals of the twentieth century.">Das Album vereint Gedichte von Rose Ausländer, Theodor Kramer, Mimi Grossberg, Paul Elbogen, Jura Soyfer und Erich Fried  — Autorinnen und Autoren, deren Leben und Werk vom Exil, von Vertreibung und den Erschütterungen des zwanzigsten Jahrhunderts geprägt waren.</p>
-<p data-en="What surprised us as we worked with these texts was how little they have aged.">Was uns bei der Arbeit mit diesen Texten überraschte, war, wie wenig sie gealtert sind.</p>
-<p data-en="They ask questions that remain painfully familiar:">Sie stellen Fragen, die schmerzlich vertraut geblieben sind:</p>
-<p data-en="What does it mean to belong somewhere?">Was bedeutet es, irgendwo dazuzugehören?</p>
-<p data-en="What remains when the ground beneath you gives way?">Was bleibt, wenn der Boden unter einem wegbricht?</p>
-<p data-en="How do you stay honest with yourself when belonging gets complicated?">Wie bleibt man innerlich ehrlich, wenn Zugehörigkeit kompliziert wird?</p>
-<p data-en="The album doesn't present these poems as isolated literary works, but as parts of a larger inner journey. It doesn't try to explain history or pass judgment on nations. Instead, it creates space for reflection — an invitation to sit with complexity rather than resolve it.">Das Album präsentiert die Gedichte nicht als isolierte Literaturwerke, sondern als Teile einer größeren inneren Reise. Es versucht nicht, Geschichte zu erklären oder Nationen zu beurteilen. Stattdessen schafft es Raum für Nachdenken — eine Einladung, mit Komplexität zu sitzen, anstatt sie aufzulösen.</p>
+      <h2 class="section-title" data-en="Why this album exists" data-ru="Почему появился этот альбом">Warum dieses Album entstand</h2>
+      <p data-en="The album brings together poems by Rose Ausländer, Theodor Kramer, Mimi Grossberg, Paul Elbogen, Jura Soyfer, and Erich Fried — writers whose lives and work were shaped by exile, displacement, and the upheavals of the twentieth century." data-ru="Альбом объединяет стихотворения Розе Ауслендер, Теодора Крамера, Мими Гроссберг, Пауля Эльбогена, Юры Сойфера и Эриха Фрида — авторов, чьи жизнь и творчество были определены изгнанием, скитаниями и потрясениями двадцатого века.">Das Album vereint Gedichte von Rose Ausländer, Theodor Kramer, Mimi Grossberg, Paul Elbogen, Jura Soyfer und Erich Fried  — Autorinnen und Autoren, deren Leben und Werk vom Exil, von Vertreibung und den Erschütterungen des zwanzigsten Jahrhunderts geprägt waren.</p>
+<p data-en="What surprised us as we worked with these texts was how little they have aged." data-ru="Работая с этими текстами, мы были поражены тем, как мало они устарели.">Was uns bei der Arbeit mit diesen Texten überraschte, war, wie wenig sie gealtert sind.</p>
+<p data-en="They ask questions that remain painfully familiar:" data-ru="Они ставят вопросы, которые по-прежнему звучат пронзительно актуально:">Sie stellen Fragen, die schmerzlich vertraut geblieben sind:</p>
+<p data-en="What does it mean to belong somewhere?" data-ru="Что значит — принадлежать?">Was bedeutet es, irgendwo dazuzugehören?</p>
+<p data-en="What remains when the ground beneath you gives way?" data-ru="Что остаётся, когда почва уходит из-под ног?">Was bleibt, wenn der Boden unter einem wegbricht?</p>
+<p data-en="How do you stay honest with yourself when belonging gets complicated?" data-ru="Как сохранить внутреннюю честность, когда чувство принадлежности становится непростым?">Wie bleibt man innerlich ehrlich, wenn Zugehörigkeit kompliziert wird?</p>
+<p data-en="The album doesn't present these poems as isolated literary works, but as parts of a larger inner journey. It doesn't try to explain history or pass judgment on nations. Instead, it creates space for reflection — an invitation to sit with complexity rather than resolve it." data-ru="Альбом представляет эти стихотворения не как отдельные литературные произведения, а как части единого внутреннего путешествия. Он не пытается объяснить историю или вынести приговор народам. Он создаёт пространство для размышления — приглашение побыть наедине со сложностью, не пытаясь её упростить.">Das Album präsentiert die Gedichte nicht als isolierte Literaturwerke, sondern als Teile einer größeren inneren Reise. Es versucht nicht, Geschichte zu erklären oder Nationen zu beurteilen. Stattdessen schafft es Raum für Nachdenken — eine Einladung, mit Komplexität zu sitzen, anstatt sie aufzulösen.</p>
     </div>
     <div>
-      <p class="why-pull" data-en="At its core is a refusal to simplify — people reduced to nationality, identity reduced to slogans, history reduced to clean narratives.">Der zentrale Gedanke ist die Weigerung zur Vereinfachung — Menschen, die auf Nationalität reduziert werden, Identität, die auf Schlagworte reduziert wird, Geschichte, die auf klare Narrative reduziert wird.</p>
+      <p class="why-pull" data-en="At its core is a refusal to simplify — people reduced to nationality, identity reduced to slogans, history reduced to clean narratives." data-ru="В основе — отказ от упрощений: люди, сведённые к национальности; идентичность, сведённая к лозунгам; история, сведённая к гладким нарративам.">Der zentrale Gedanke ist die Weigerung zur Vereinfachung — Menschen, die auf Nationalität reduziert werden, Identität, die auf Schlagworte reduziert wird, Geschichte, die auf klare Narrative reduziert wird.</p>
       <div class="stages">
-        <div class="stage"><span class="stage-num">I</span><div><div class="stage-title" data-en="Awakening">Erwachen</div><div class="stage-desc">Nachtflug — Mimi Grossberg</div></div></div>
-        <div class="stage"><span class="stage-num">II</span><div><div class="stage-title" data-en="Conformity">Konformität</div><div class="stage-desc">Das laufende Band — Rose Ausländer</div></div></div>
-        <div class="stage"><span class="stage-num">III</span><div><div class="stage-title" data-en="Uprooting">Entwurzelung</div><div class="stage-desc">Der Emigrant — Paul Elbogen</div></div></div>
-        <div class="stage"><span class="stage-num">IV</span><div><div class="stage-title" data-en="Closeness">Nähe</div><div class="stage-desc">Marie — Theodor Kramer</div></div></div>
-        <div class="stage"><span class="stage-num">V</span><div><div class="stage-title" data-en="Historical awareness">Geschichtsbewusstsein</div><div class="stage-desc">Denn nahe, viel näher — Jura Soyfer</div></div></div>
-        <div class="stage"><span class="stage-num">VI</span><div><div class="stage-title" data-en="Embracing complexity">Annahme der Vielschichtigkeit</div><div class="stage-desc">Dich — Erich Fried</div></div></div>
+        <div class="stage"><span class="stage-num">I</span><div><div class="stage-title" data-en="Awakening" data-ru="Пробуждение">Erwachen</div><div class="stage-desc" data-ru="Ночной полёт (Nachtflug) — Мими Гроссберг">Nachtflug — Mimi Grossberg</div></div></div>
+        <div class="stage"><span class="stage-num">II</span><div><div class="stage-title" data-en="Conformity" data-ru="Конформизм">Konformität</div><div class="stage-desc" data-ru="Конвейер (Das laufende Band) — Розе Ауслендер">Das laufende Band — Rose Ausländer</div></div></div>
+        <div class="stage"><span class="stage-num">III</span><div><div class="stage-title" data-en="Uprooting" data-ru="Отчуждение">Entwurzelung</div><div class="stage-desc" data-ru="Эмигрант (Der Emigrant) — Пауль Эльбоген">Der Emigrant — Paul Elbogen</div></div></div>
+        <div class="stage"><span class="stage-num">IV</span><div><div class="stage-title" data-en="Closeness" data-ru="Близость">Nähe</div><div class="stage-desc" data-ru="Мари (Marie) — Теодор Крамер">Marie — Theodor Kramer</div></div></div>
+        <div class="stage"><span class="stage-num">V</span><div><div class="stage-title" data-en="Historical awareness" data-ru="Историческое сознание">Geschichtsbewusstsein</div><div class="stage-desc" data-ru="Ведь ближе, много ближе (Denn nahe, viel näher) — Юра Сойфер">Denn nahe, viel näher — Jura Soyfer</div></div></div>
+        <div class="stage"><span class="stage-num">VI</span><div><div class="stage-title" data-en="Embracing complexity" data-ru="Принятие многогранности">Annahme der Vielschichtigkeit</div><div class="stage-desc" data-ru="Тебя (Dich) — Эрих Фрид">Dich — Erich Fried</div></div></div>
       </div>
     </div>
   </div>
 </section>
 
 <section id="music">
-  <span class="section-label" data-en="The Sound">Der Klang</span>
-  <h2 class="section-title" data-en="Music from many worlds">Musik aus vielen Welten</h2>
+  <span class="section-label" data-en="The Sound" data-ru="Звучание">Der Klang</span>
+  <h2 class="section-title" data-en="Music from many worlds" data-ru="Музыка из многих миров">Musik aus vielen Welten</h2>
   <div class="music-text">
-    <p data-en="Europe has always been a place of movement — people traveling, settling, bringing their languages and traditions with them and blending them with what they found. The musicians on this album are part of that story. Different backgrounds, different paths, different things carried or left behind. That's where the sound comes from.">Europa war schon immer ein Ort der Bewegung — Menschen, die reisten, sich niederließen, ihre Sprachen und Traditionen mitbrachten und sie mit dem vermischten, was sie vorfanden. Die Musiker·innen dieses Albums sind Teil dieser Geschichte. Verschiedene Hintergründe, verschiedene Wege, verschiedene Dinge, die mitgenommen oder zurückgelassen wurden. Daher kommt der Klang.</p>
-    <p data-en="The texts shaped the music as much as the musicians themselves. Each poem suggested something — a tempo, a texture, a feeling that couldn't quite be named but could be played. The musicians listened to those suggestions and followed them, finding connections between what the poets had written and what they had always carried within themselves. The result belongs to no single tradition — and to all of them at once.">Die Texte haben die Musik genauso geprägt wie die Musiker·innen selbst. Jedes Gedicht schlug etwas vor — ein Tempo, eine Textur, ein Gefühl, das sich nicht ganz benennen, aber spielen ließ. Die Musiker·innen hörten diese Vorschläge und folgten ihnen, fanden Verbindungen zwischen dem, was die Dichter·innen geschrieben hatten, und dem, was sie selbst immer in sich getragen hatten. Das Ergebnis ist etwas, das zu keiner einzigen Tradition gehört — und zu allen zugleich.</p>
+    <p data-en="Europe has always been a place of movement — people traveling, settling, bringing their languages and traditions with them and blending them with what they found. The musicians on this album are part of that story. Different backgrounds, different paths, different things carried or left behind. That's where the sound comes from." data-ru="Европа всегда была местом движения — люди странствовали, оседали, привозили с собой свои языки и традиции, переплетая их с тем, что находили на новом месте. Музыканты этого альбома — часть этой истории. Разные корни, разные пути, разное взятое с собой и оставленное позади. Отсюда и рождается звучание.">Europa war schon immer ein Ort der Bewegung — Menschen, die reisten, sich niederließen, ihre Sprachen und Traditionen mitbrachten und sie mit dem vermischten, was sie vorfanden. Die Musiker·innen dieses Albums sind Teil dieser Geschichte. Verschiedene Hintergründe, verschiedene Wege, verschiedene Dinge, die mitgenommen oder zurückgelassen wurden. Daher kommt der Klang.</p>
+    <p data-en="The texts shaped the music as much as the musicians themselves. Each poem suggested something — a tempo, a texture, a feeling that couldn't quite be named but could be played. The musicians listened to those suggestions and followed them, finding connections between what the poets had written and what they had always carried within themselves. The result belongs to no single tradition — and to all of them at once." data-ru="Тексты формировали музыку не меньше, чем сами музыканты. Каждое стихотворение подсказывало что-то — темп, фактуру, чувство, которое невозможно назвать словами, но можно сыграть. Музыканты прислушивались к этим подсказкам, находя связи между тем, что написали поэты, и тем, что они сами всегда несли в себе. Результат не принадлежит ни одной традиции — и принадлежит всем сразу.">Die Texte haben die Musik genauso geprägt wie die Musiker·innen selbst. Jedes Gedicht schlug etwas vor — ein Tempo, eine Textur, ein Gefühl, das sich nicht ganz benennen, aber spielen ließ. Die Musiker·innen hörten diese Vorschläge und folgten ihnen, fanden Verbindungen zwischen dem, was die Dichter·innen geschrieben hatten, und dem, was sie selbst immer in sich getragen hatten. Das Ergebnis ist etwas, das zu keiner einzigen Tradition gehört — und zu allen zugleich.</p>
   </div>
 </section>
 
 <section id="poets">
-  <span class="section-label" data-en="The Voices">Die Stimmen</span>
-  <h2 class="section-title" data-en="Six poets. One century.">Sechs Dichter·innen. Ein Jahrhundert.</h2>
+  <span class="section-label" data-en="The Voices" data-ru="Голоса">Die Stimmen</span>
+  <h2 class="section-title" data-en="Six poets. One century." data-ru="Шесть поэтов. Один век.">Sechs Dichter·innen. Ein Jahrhundert.</h2>
   <div class="poets-grid">
     <div class="poet-card">
-      <div class="poet-name">Mimi Grossberg</div>
+      <div class="poet-name" data-en="Mimi Grossberg" data-ru="Мими Гроссберг">Mimi Grossberg</div>
       <div class="poet-years">1905 – 1997</div>
-      <div class="poet-desc" data-en-html="Born in Vienna, she emigrated to New York in 1938 after the Anschluss. A poet, prose writer, and tireless organiser of Austrian exile literature in the United States. Her poem <em>Nachtflug</em> captures a moment of overwhelming cosmic awareness during an early transatlantic flight.">In Wien geboren, emigrierte sie 1938 nach dem Anschluss nach New York. Dichterin, Prosaschriftstellerin und unermüdliche Kulturorganisatorin der österreichischen Exilliteratur in den USA. Ihr Gedicht <em>Nachtflug</em> hält einen Moment überwältigenden kosmischen Bewusstseins während eines frühen transatlantischen Fluges fest.</div>
+      <div class="poet-desc" data-en-html="Born in Vienna, she emigrated to New York in 1938 after the Anschluss. A poet, prose writer, and tireless organiser of Austrian exile literature in the United States. Her poem <em>Nachtflug</em> captures a moment of overwhelming cosmic awareness during an early transatlantic flight." data-ru-html="Родилась в Вене, эмигрировала в Нью-Йорк в 1938 году после аншлюса. Поэтесса, прозаик и неутомимая организаторка культурной жизни австрийской эмиграции в США. Её стихотворение <em>Ночной полёт (Nachtflug)</em> запечатлевает момент головокружительного космического осознания во время раннего трансатлантического перелёта.">In Wien geboren, emigrierte sie 1938 nach dem Anschluss nach New York. Dichterin, Prosaschriftstellerin und unermüdliche Kulturorganisatorin der österreichischen Exilliteratur in den USA. Ihr Gedicht <em>Nachtflug</em> hält einen Moment überwältigenden kosmischen Bewusstseins während eines frühen transatlantischen Fluges fest.</div>
       <div class="poet-links">
-        <a href="https://www.geschichtewiki.wien.gv.at/Mimi_Grossberg" target="_blank" rel="noopener" class="poet-link">Wien Geschichte Wiki ↗</a>
+        <a href="https://www.geschichtewiki.wien.gv.at/Mimi_Grossberg" target="_blank" rel="noopener" class="poet-link" data-en="Vienna History Wiki ↗" data-ru="Вики по истории Вены ↗">Wien Geschichte Wiki ↗</a>
       </div>
     </div>
     <div class="poet-card">
-      <div class="poet-name">Rose Ausländer</div>
+      <div class="poet-name" data-en="Rose Ausländer" data-ru="Розе Ауслендер">Rose Ausländer</div>
       <div class="poet-years">1901 – 1988</div>
-      <div class="poet-desc" data-en="Born in Czernowitz (now Ukraine), she survived the Nazi occupation hiding in a cellar. She later settled in Düsseldorf, where she spent her final decades in remarkable creative abundance. One of the most important German-language poets of the twentieth century.">In Czernowitz (heute Ukraine) geboren, überlebte sie die NS-Besatzung versteckt in einem Keller. Später ließ sie sich in Düsseldorf nieder, wo sie ihre letzten Jahrzehnte in großer Schaffensfreude verbrachte. Eine der bedeutendsten deutschsprachigen Lyrikerinnen des zwanzigsten Jahrhunderts.</div>
+      <div class="poet-desc" data-en="Born in Czernowitz (now Ukraine), she survived the Nazi occupation hiding in a cellar. She later settled in Düsseldorf, where she spent her final decades in remarkable creative abundance. One of the most important German-language poets of the twentieth century." data-ru="Родилась в Черновцах (сегодня Украина), пережила нацистскую оккупацию, скрываясь в подвале. Позже поселилась в Дюссельдорфе, где провела последние десятилетия жизни в удивительном творческом расцвете. Одна из важнейших немецкоязычных поэтесс двадцатого века.">In Czernowitz (heute Ukraine) geboren, überlebte sie die NS-Besatzung versteckt in einem Keller. Später ließ sie sich in Düsseldorf nieder, wo sie ihre letzten Jahrzehnte in großer Schaffensfreude verbrachte. Eine der bedeutendsten deutschsprachigen Lyrikerinnen des zwanzigsten Jahrhunderts.</div>
       <div class="poet-links">
-        <a href="https://www.roseauslaender-gesellschaft.de/" target="_blank" rel="noopener" class="poet-link">Rose Ausländer Gesellschaft ↗</a>
+        <a href="https://www.roseauslaender-gesellschaft.de/" target="_blank" rel="noopener" class="poet-link" data-en="Rose Ausländer Society ↗" data-ru="Общество Розе Ауслендер ↗">Rose Ausländer Gesellschaft ↗</a>
       </div>
     </div>
     <div class="poet-card">
-      <div class="poet-name">Paul Elbogen</div>
+      <div class="poet-name" data-en="Paul Elbogen" data-ru="Пауль Эльбоген">Paul Elbogen</div>
       <div class="poet-years">1894 – 1987</div>
-      <div class="poet-desc" data-en-html="Born in Vienna, he was a journalist, novelist, and poet who fled to France in 1938 and later emigrated to North America. <em>Der Emigrant</em>, written in French exile in 1941, blends dark humour with the painful reality of forced displacement.">In Wien geboren, war er Journalist, Romanautor und Dichter, der 1938 nach Frankreich floh und später nach Nordamerika emigrierte. <em>Der Emigrant</em>, 1941 im französischen Exil entstanden, verbindet schwarzen Humor mit der schmerzlichen Realität erzwungener Vertreibung.</div>
+      <div class="poet-desc" data-en-html="Born in Vienna, he was a journalist, novelist, and poet who fled to France in 1938 and later emigrated to North America. <em>Der Emigrant</em>, written in French exile in 1941, blends dark humour with the painful reality of forced displacement." data-ru-html="Родился в Вене. Журналист, романист и поэт, бежавший в 1938 году во Францию, а затем эмигрировавший в Северную Америку. <em>Эмигрант (Der Emigrant)</em>, написанный в 1941 году во французском изгнании, сочетает чёрный юмор с горькой реальностью вынужденного перемещения.">In Wien geboren, war er Journalist, Romanautor und Dichter, der 1938 nach Frankreich floh und später nach Nordamerika emigrierte. <em>Der Emigrant</em>, 1941 im französischen Exil entstanden, verbindet schwarzen Humor mit der schmerzlichen Realität erzwungener Vertreibung.</div>
       <div class="poet-links">
       </div>
     </div>
     <div class="poet-card">
-      <div class="poet-name">Theodor Kramer</div>
+      <div class="poet-name" data-en="Theodor Kramer" data-ru="Теодор Крамер">Theodor Kramer</div>
       <div class="poet-years">1897 – 1958</div>
-      <div class="poet-desc" data-en="Born in Niederhollabrunn (Lower Austria), he was a poet of everyday life, of labour, and of the overlooked. In 1939 he fled to England, where he spent the war years in poverty and isolation before returning to Vienna in 1957.">In Niederhollabrunn (Niederösterreich) geboren, war er ein Dichter des Alltags, der Arbeitswelt und der Übersehenen. 1939 floh er nach England, wo er die Kriegsjahre in Armut und Isolation verbrachte, bevor er 1957 nach Wien zurückkehrte.</div>
+      <div class="poet-desc" data-en="Born in Niederhollabrunn (Lower Austria), he was a poet of everyday life, of labour, and of the overlooked. In 1939 he fled to England, where he spent the war years in poverty and isolation before returning to Vienna in 1957." data-ru="Родился в Нидерхоллабрунне (Нижняя Австрия). Поэт повседневности, труда и незамеченных людей. В 1939 году бежал в Англию, где провёл военные годы в бедности и одиночестве, прежде чем вернуться в Вену в 1957 году.">In Niederhollabrunn (Niederösterreich) geboren, war er ein Dichter des Alltags, der Arbeitswelt und der Übersehenen. 1939 floh er nach England, wo er die Kriegsjahre in Armut und Isolation verbrachte, bevor er 1957 nach Wien zurückkehrte.</div>
       <div class="poet-links">
-        <a href="https://theodorkramer.at/tkg/theodor-kramer/biographie-und-werk/" target="_blank" rel="noopener" class="poet-link">Theodor Kramer Gesellschaft ↗</a>
+        <a href="https://theodorkramer.at/tkg/theodor-kramer/biographie-und-werk/" target="_blank" rel="noopener" class="poet-link" data-en="Theodor Kramer Society ↗" data-ru="Общество Теодора Крамера ↗">Theodor Kramer Gesellschaft ↗</a>
       </div>
     </div>
     <div class="poet-card">
-      <div class="poet-name">Jura Soyfer</div>
+      <div class="poet-name" data-en="Jura Soyfer" data-ru="Юра Сойфер">Jura Soyfer</div>
       <div class="poet-years">1912 – 1939</div>
-      <div class="poet-desc" data-en="Born in Kharkiv (Ukraine), he grew up in Vienna and became one of Austria's most gifted political playwrights and poets. Arrested in 1938, he died at age 26 in Buchenwald. His work is marked by relentless wit, humour, and humanist urgency.">In Charkiw (Ukraine) geboren, wuchs er in Wien auf und wurde einer der begabtesten politischen Dramatiker und Dichter Österreichs. 1938 verhaftet, starb er mit 26 Jahren in Buchenwald. Sein Werk ist von unerbittlicher Klugheit, Humor und humanistischer Dringlichkeit geprägt.</div>
+      <div class="poet-desc" data-en="Born in Kharkiv (Ukraine), he grew up in Vienna and became one of Austria's most gifted political playwrights and poets. Arrested in 1938, he died at age 26 in Buchenwald. His work is marked by relentless wit, humour, and humanist urgency." data-ru="Родился в Харькове (Украина), вырос в Вене и стал одним из самых одаренных политических драматургов и поэтов Австрии. Арестован в 1938 году, умер в возрасте 26 лет в Бухенвальде. Его творчество отличает бескомпромиссный ум, юмор и гуманистическая страстность.">In Charkiw (Ukraine) geboren, wuchs er in Wien auf und wurde einer der begabtesten politischen Dramatiker und Dichter Österreichs. 1938 verhaftet, starb er mit 26 Jahren in Buchenwald. Sein Werk ist von unerbittlicher Klugheit, Humor und humanistischer Dringlichkeit geprägt.</div>
       <div class="poet-links">
-        <a href="https://www.soyfer.at/deutsch/index.htm" target="_blank" rel="noopener" class="poet-link">Soyfer Gesellschaft ↗</a>
-        <a href="https://www.projekt-gutenberg.org/autoren/namen/soyfer.html" target="_blank" rel="noopener" class="poet-link">Texte ↗</a>
+        <a href="https://www.soyfer.at/deutsch/index.htm" target="_blank" rel="noopener" class="poet-link" data-en="Soyfer Society ↗" data-ru="Общество Сойфера ↗">Soyfer Gesellschaft ↗</a>
+        <a href="https://www.projekt-gutenberg.org/autoren/namen/soyfer.html" target="_blank" rel="noopener" class="poet-link" data-en="Texts ↗" data-ru="Тексты ↗">Texte ↗</a>
       </div>
     </div>
     <div class="poet-card">
-      <div class="poet-name">Erich Fried</div>
+      <div class="poet-name" data-en="Erich Fried" data-ru="Эрих Фрид">Erich Fried</div>
       <div class="poet-years">1921 – 1988</div>
-      <div class="poet-desc" data-en="Born in Vienna, he fled to London in 1938 after his father was murdered by the Gestapo. He became one of the most widely read German-language poets of the postwar era — known for love poems of radical tenderness and sharply political verse.">In Wien geboren, floh er 1938 nach London, nachdem sein Vater von der Gestapo ermordet worden war. Er wurde einer der meistgelesenen deutschsprachigen Dichter der Nachkriegszeit — bekannt für Liebesgedichte von radikaler Zärtlichkeit und scharf politische Verse.</div>
+      <div class="poet-desc" data-en="Born in Vienna, he fled to London in 1938 after his father was murdered by the Gestapo. He became one of the most widely read German-language poets of the postwar era — known for love poems of radical tenderness and sharply political verse." data-ru="Родился в Вене, бежал в Лондон в 1938 году после того, как его отец был убит гестапо. Стал одним из самых читаемых немецкоязычных поэтов послевоенной эпохи — известен любовной лирикой пронзительной нежности и остро политическими стихами.">In Wien geboren, floh er 1938 nach London, nachdem sein Vater von der Gestapo ermordet worden war. Er wurde einer der meistgelesenen deutschsprachigen Dichter der Nachkriegszeit — bekannt für Liebesgedichte von radikaler Zärtlichkeit und scharf politische Verse.</div>
       <div class="poet-links">
-        <a href="https://erich-fried-gesellschaft.at/erich-fried-biographie/" target="_blank" rel="noopener" class="poet-link">Erich Frieds Biographie ↗</a>
-        <a href="https://www.wagenbach.de/" target="_blank" rel="noopener" class="poet-link">Verlag Klaus Wagenbach ↗</a>
+        <a href="https://erich-fried-gesellschaft.at/erich-fried-biographie/" target="_blank" rel="noopener" class="poet-link" data-en="Erich Fried's Biography ↗" data-ru="Биография Эриха Фрида ↗">Erich Frieds Biographie ↗</a>
+        <a href="https://www.wagenbach.de/" target="_blank" rel="noopener" class="poet-link" data-en="Klaus Wagenbach Publishers ↗" data-ru="Издательство Клауса Вагенбаха ↗">Verlag Klaus Wagenbach ↗</a>
       </div>
     </div>
   </div>
 </section>
 
 <section id="tracklist">
-  <span class="section-label" data-en="The Album">Das Album</span>
-  <h2 class="section-title" data-en="Six Songs">Sechs Lieder</h2>
+  <span class="section-label" data-en="The Album" data-ru="Альбом">Das Album</span>
+  <h2 class="section-title" data-en="Six Songs" data-ru="Шесть песен">Sechs Lieder</h2>
   <div class="track-list">
 
     <div class="track-item">
       <button class="track-header" onclick="toggleTrack(this)" aria-expanded="false">
         <span class="track-num">01</span>
-        <div class="track-info"><div class="track-title">Nachtflug</div><div class="track-author">Mimi Grossberg</div></div>
-        <span class="track-stage" data-en="I — Awakening">I — Erwachen</span>
+        <div class="track-info"><div class="track-title" data-ru="Ночной полёт (Nachtflug)">Nachtflug</div><div class="track-author" data-ru="Мими Гроссберг">Mimi Grossberg</div></div>
+        <span class="track-stage" data-en="I — Awakening" data-ru="I — Пробуждение">I — Erwachen</span>
         <span class="track-toggle" aria-hidden="true">+</span>
       </button>
       <div class="track-poem">
         <div class="track-poem-inner">
           <div class="poem-legend">
-            <div class="legend-item"><span class="legend-line"></span> <span data-en="Original poem">Originalgedicht</span></div>
-            <div class="legend-item"><span class="legend-bar"></span> <span data-en="Added by Lelio">Ergänzt von Lelio</span></div>
+            <div class="legend-item"><span class="legend-line"></span> <span data-en="Original poem" data-ru="Оригинальное стихотворение">Originalgedicht</span></div>
+            <div class="legend-item"><span class="legend-bar"></span> <span data-en="Added by Lelio" data-ru="Добавлено Lelio">Ergänzt von Lelio</span></div>
           </div>
           <div class="poem-text"><span class="poem-original">Ich fliege an den Rand der Zeit,
 nah, wie noch nie,
@@ -553,15 +582,15 @@ der Ewigkeit.</span></div>
     <div class="track-item">
       <button class="track-header" onclick="toggleTrack(this)" aria-expanded="false">
         <span class="track-num">02</span>
-        <div class="track-info"><div class="track-title">Das laufende Band</div><div class="track-author">Rose Ausländer</div></div>
-        <span class="track-stage" data-en="II — Conformity">II — Konformität</span>
+        <div class="track-info"><div class="track-title" data-ru="Конвейер (Das laufende Band)">Das laufende Band</div><div class="track-author" data-ru="Розе Ауслендер">Rose Ausländer</div></div>
+        <span class="track-stage" data-en="II — Conformity" data-ru="II — Конформизм">II — Konformität</span>
         <span class="track-toggle" aria-hidden="true">+</span>
       </button>
       <div class="track-poem">
         <div class="track-poem-inner">
           <div class="poem-legend">
-            <div class="legend-item"><span class="legend-line"></span> <span data-en="Original poem">Originalgedicht</span></div>
-            <div class="legend-item"><span class="legend-bar"></span> <span data-en="Added by Lelio">Ergänzt von Lelio</span></div>
+            <div class="legend-item"><span class="legend-line"></span> <span data-en="Original poem" data-ru="Оригинальное стихотворение">Originalgedicht</span></div>
+            <div class="legend-item"><span class="legend-bar"></span> <span data-en="Added by Lelio" data-ru="Добавлено Lelio">Ergänzt von Lelio</span></div>
           </div>
           <div class="poem-text"><span class="poem-original">Wir brauchen keine Berge,
 die plump und müßig stehn.
@@ -605,17 +634,17 @@ zum laufenden Band.</span></div>
     <div class="track-item">
       <button class="track-header" onclick="toggleTrack(this)" aria-expanded="false">
         <span class="track-num">03</span>
-        <div class="track-info"><div class="track-title">Der Emigrant</div><div class="track-author">Paul Elbogen</div></div>
-        <span class="track-stage" data-en="III — Uprooting">III — Entwurzelung</span>
+        <div class="track-info"><div class="track-title" data-ru="Эмигрант (Der Emigrant)">Der Emigrant</div><div class="track-author" data-ru="Пауль Эльбоген">Paul Elbogen</div></div>
+        <span class="track-stage" data-en="III — Uprooting" data-ru="III — Отчуждение">III — Entwurzelung</span>
         <span class="track-toggle" aria-hidden="true">+</span>
       </button>
       <div class="track-poem">
         <div class="track-poem-inner">
           <div class="poem-legend">
-            <div class="legend-item"><span class="legend-line"></span> <span data-en="Original poem">Originalgedicht</span></div>
-            <div class="legend-item"><span class="legend-bar"></span> <span data-en="Added by Lelio">Ergänzt von Lelio</span></div>
+            <div class="legend-item"><span class="legend-line"></span> <span data-en="Original poem" data-ru="Оригинальное стихотворение">Originalgedicht</span></div>
+            <div class="legend-item"><span class="legend-bar"></span> <span data-en="Added by Lelio" data-ru="Добавлено Lelio">Ergänzt von Lelio</span></div>
           </div>
-          <div class="poem-text"><span class="poem-note" data-en="A tragic comic poem, written in France, 1941">Tragisches Scherzgedicht, entstanden in Frankreich, 1941</span><span class="poem-original">Jeder Mensch, auch Goethe, auch Homer,
+          <div class="poem-text"><span class="poem-note" data-en="A tragic comic poem, written in France, 1941" data-ru="Трагикомичное стихотворение, написанное во Франции, 1941">Tragisches Scherzgedicht, entstanden in Frankreich, 1941</span><span class="poem-original">Jeder Mensch, auch Goethe, auch Homer,
 Den man in ein fremdes Land verbannt,
 Wird, wenn's Portemonnaie wird hastig leer,
 Ein Emigrant. Der Emigrant.
@@ -653,15 +682,15 @@ Wir sind Emigrantinnen der Welt.</span></div>
     <div class="track-item">
       <button class="track-header" onclick="toggleTrack(this)" aria-expanded="false">
         <span class="track-num">04</span>
-        <div class="track-info"><div class="track-title">Marie</div><div class="track-author">Theodor Kramer</div></div>
-        <span class="track-stage" data-en="IV — Closeness">IV — Nähe</span>
+        <div class="track-info"><div class="track-title" data-ru="Мари (Marie)">Marie</div><div class="track-author" data-ru="Теодор Крамер">Theodor Kramer</div></div>
+        <span class="track-stage" data-en="IV — Closeness" data-ru="IV — Близость">IV — Nähe</span>
         <span class="track-toggle" aria-hidden="true">+</span>
       </button>
       <div class="track-poem">
         <div class="track-poem-inner">
           <div class="poem-legend">
-            <div class="legend-item"><span class="legend-line"></span> <span data-en="Original poem">Originalgedicht</span></div>
-            <div class="legend-item"><span class="legend-bar"></span> <span data-en="Added by Lelio">Ergänzt von Lelio</span></div>
+            <div class="legend-item"><span class="legend-line"></span> <span data-en="Original poem" data-ru="Оригинальное стихотворение">Originalgedicht</span></div>
+            <div class="legend-item"><span class="legend-bar"></span> <span data-en="Added by Lelio" data-ru="Добавлено Lelio">Ergänzt von Lelio</span></div>
           </div>
           <div class="poem-text"><span class="poem-original">Komm und rück zu mir, Marie,
 laß uns liegen Knie an Knie,
@@ -697,8 +726,8 @@ hörst du mi'?</span></div>
     <div class="track-item">
       <button class="track-header" onclick="toggleTrack(this)" aria-expanded="false">
         <span class="track-num">05</span>
-        <div class="track-info"><div class="track-title">Denn nahe, viel näher</div><div class="track-author">Jura Soyfer</div></div>
-        <span class="track-stage" data-en="V — Historical awareness">V — Geschichtsbewusstsein</span>
+        <div class="track-info"><div class="track-title" data-ru="Ведь ближе, много ближе (Denn nahe, viel näher)">Denn nahe, viel näher</div><div class="track-author" data-ru="Юра Сойфер">Jura Soyfer</div></div>
+        <span class="track-stage" data-en="V — Historical awareness" data-ru="V — Историческое сознание">V — Geschichtsbewusstsein</span>
         <span class="track-toggle" aria-hidden="true">+</span>
       </button>
       <div class="track-poem">
@@ -727,8 +756,8 @@ Ich sah, wie sie zwischen den Staaten schon reift.</span></div>
     <div class="track-item">
       <button class="track-header" onclick="toggleTrack(this)" aria-expanded="false">
         <span class="track-num">06</span>
-        <div class="track-info"><div class="track-title">Dich</div><div class="track-author">Erich Fried</div></div>
-        <span class="track-stage" data-en="VI — Complexity">VI — Vielschichtigkeit</span>
+        <div class="track-info"><div class="track-title" data-ru="Тебя (Dich)">Dich</div><div class="track-author" data-ru="Эрих Фрид">Erich Fried</div></div>
+        <span class="track-stage" data-en="VI — Complexity" data-ru="VI — Многогранность">VI — Vielschichtigkeit</span>
         <span class="track-toggle" aria-hidden="true">+</span>
       </button>
       <div class="track-poem">
@@ -784,67 +813,67 @@ gar nicht so schwer</span></div>
   </div>
 
   <div class="rights-notice">
-    <span class="rights-notice-label" data-en="Text rights notice">Hinweis zu Textrechten</span>
-    <p id="rights-text" data-en-html="The following texts are subject to licensing: &quot;Der Emigrant&quot; by Paul Elbogen and &quot;Dich&quot; by Erich Fried. We have contacted all known parties to identify the rights holders but have not yet received a response. Our project is non-commercial. If you hold or manage the rights to any of these texts, we kindly ask you to get in touch so that we can make a donation to your organisation or pay an appropriate licensing fee for the use of the text in our music project. — <span id=&quot;rights-email-link&quot;></span>">Die folgenden Texte sind lizenzpflichtig: „Der Emigrant" von Paul Elbogen, „Dich" von Erich Fried. Wir haben alle uns bekannten Stellen kontaktiert, um die Rechteinhaberinnen und Rechtsinhaber ausfindig zu machen, bisher jedoch keine Antwort erhalten. Unser Projekt ist nicht kommerziell. Sollten Sie die Rechte an einem dieser Texte halten oder verwalten, bitten wir Sie herzlich, sich mit uns in Verbindung zu setzen, damit wir eine Spende an Ihre Gesellschaft leisten bzw. eine angemessene Lizenzgebühr für die Nutzung des Textes in unserem Musikprojekt entrichten können. — <span id="rights-email-link"></span></p>
+    <span class="rights-notice-label" data-en="Text rights notice" data-ru="Уведомление об авторских правах">Hinweis zu Textrechten</span>
+    <p id="rights-text" data-en-html="The following texts are subject to licensing: &quot;Der Emigrant&quot; by Paul Elbogen and &quot;Dich&quot; by Erich Fried. We have contacted all known parties to identify the rights holders but have not yet received a response. Our project is non-commercial. If you hold or manage the rights to any of these texts, we kindly ask you to get in touch so that we can make a donation to your organisation or pay an appropriate licensing fee for the use of the text in our music project. — <span id=&quot;rights-email-link&quot;></span>" data-ru-html="Следующие тексты подлежат лицензированию: «Эмигрант» (Der Emigrant) Пауля Эльбогена и «Тебя» (Dich) Эриха Фрида. Мы обратились ко всем известным нам инстанциям для установления правообладателей, но пока не получили ответа. Наш проект некоммерческий. Если вы являетесь правообладателем или представляете его интересы, мы будем признательны за обратную связь, чтобы сделать пожертвование вашей организации или оплатить надлежащий лицензионный сбор за использование текста в нашем музыкальном проекте. — <span id=&quot;rights-email-link&quot;></span>">Die folgenden Texte sind lizenzpflichtig: „Der Emigrant" von Paul Elbogen, „Dich" von Erich Fried. Wir haben alle uns bekannten Stellen kontaktiert, um die Rechteinhaberinnen und Rechtsinhaber ausfindig zu machen, bisher jedoch keine Antwort erhalten. Unser Projekt ist nicht kommerziell. Sollten Sie die Rechte an einem dieser Texte halten oder verwalten, bitten wir Sie herzlich, sich mit uns in Verbindung zu setzen, damit wir eine Spende an Ihre Gesellschaft leisten bzw. eine angemessene Lizenzgebühr für die Nutzung des Textes in unserem Musikprojekt entrichten können. — <span id="rights-email-link"></span></p>
   </div>
 </section>
 
 <section id="musicians">
-  <span class="section-label" data-en="The Musicians">Die Musiker·innen</span>
-  <h2 class="section-title" data-en="The people behind the music">Die Menschen hinter der Musik</h2>
+  <span class="section-label" data-en="The Musicians" data-ru="Музыканты">Die Musiker·innen</span>
+  <h2 class="section-title" data-en="The people behind the music" data-ru="Люди, стоящие за музыкой">Die Menschen hinter der Musik</h2>
 
   <div class="band-photo-wrap">
-    <img src="images/photo-ensemble.jpg" alt="Das Lelio-Ensemble im Studio" data-en-attr="alt:The Lelio ensemble in the studio" />
+    <img src="images/photo-ensemble.jpg" alt="Das Lelio-Ensemble im Studio" data-en-attr="alt:The Lelio ensemble in the studio" data-ru-attr="alt:Ансамбль Lelio в студии" />
   </div>
 
   <div class="musicians-grid">
     <div class="musician-card">
-      <div class="musician-photo"><img src="images/photo-polina.jpg" alt="Polina Vinogradova am Mikrofon" data-en-attr="alt:Polina Vinogradova at the microphone" /></div>
+      <div class="musician-photo"><img src="images/photo-polina.jpg" alt="Polina Vinogradova am Mikrofon" data-en-attr="alt:Polina Vinogradova at the microphone" data-ru-attr="alt:Polina Vinogradova у микрофона" /></div>
       <div class="musician-info">
-        <div class="musician-name">Polina Vinogradova</div>
-        <div class="musician-role" data-en="Vocals">Gesang</div>
-        <div class="musician-bio" data-en="Polina Vinogradova is a UX/UI designer and content strategist with nearly a decade of experience in branding, marketing, user experience, and software interface development. Music has always been part of her life. Together with Simon Reithofer, she founded the music group Leliafan in 2019 and later Lelio — a new artistic direction rooted in Austrian exile literature.">Polina Vinogradova ist UX/UI-Designerin und Content-Strategin mit fast einem Jahrzehnt Erfahrung in Branding, Marketing, User Experience und der Entwicklung von Software-Oberflächen. Musik war schon immer Teil ihres Lebens. Gemeinsam mit Simon Reithofer gründete sie 2019 die Musikgruppe Leliafan und später Lelio — eine neue künstlerische Richtung, verwurzelt in der österreichischen Exilliteratur.</div>
+        <div class="musician-name" data-ru="Полина Виноградова">Polina Vinogradova</div>
+        <div class="musician-role" data-en="Vocals" data-ru="Вокал">Gesang</div>
+        <div class="musician-bio" data-en="Polina Vinogradova is a UX/UI designer and content strategist with nearly a decade of experience in branding, marketing, user experience, and software interface development. Music has always been part of her life. Together with Simon Reithofer, she founded the music group Leliafan in 2019 and later Lelio — a new artistic direction rooted in Austrian exile literature." data-ru="Полина Виноградова — UX/UI-дизайнер и контент-стратег с почти десятилетним опытом работы в брендинге, маркетинге, проектировании пользовательского опыта и разработке интерфейсов. Музыка всегда была частью её жизни. Вместе с Симоном Райтхофером она основала в 2019 году музыкальную группу Leliafan, а затем — Lelio, новое художественное направление, укоренённое в австрийской литературе изгнания.">Polina Vinogradova ist UX/UI-Designerin und Content-Strategin mit fast einem Jahrzehnt Erfahrung in Branding, Marketing, User Experience und der Entwicklung von Software-Oberflächen. Musik war schon immer Teil ihres Lebens. Gemeinsam mit Simon Reithofer gründete sie 2019 die Musikgruppe Leliafan und später Lelio — eine neue künstlerische Richtung, verwurzelt in der österreichischen Exilliteratur.</div>
         <div class="musician-links">
           <a href="https://www.instagram.com/povinogradova" target="_blank" rel="noopener" class="musician-link">Instagram ↗</a>
         </div>
       </div>
     </div>
     <div class="musician-card">
-      <div class="musician-photo"><img src="images/photo-simon.jpg" alt="Simon Reithofer an der Gitarre" data-en-attr="alt:Simon Reithofer on guitar" /></div>
+      <div class="musician-photo"><img src="images/photo-simon.jpg" alt="Simon Reithofer an der Gitarre" data-en-attr="alt:Simon Reithofer on guitar" data-ru-attr="alt:Simon Reithofer на гитаре" /></div>
       <div class="musician-info">
-        <div class="musician-name">Simon Reithofer</div>
-        <div class="musician-role" data-en="Guitar &amp; Banjo">Gitarre &amp; Banjo</div>
-        <div class="musician-bio" data-en="Simon Reithofer is a musicologist, jazz guitarist, and instrumental pedagogue based in Graz. His musical focus lies in the jazz of the 1920s through 1940s and the music of Django Reinhardt, extending to klezmer, traditional Roma songs, and Arabic music. He has performed across Europe and Central Asia.">Simon Reithofer ist Musikwissenschaftler, Jazzgitarrist und Instrumentalpädagoge in Graz. Sein musikalischer Schwerpunkt liegt im Jazz der 1920er bis 40er Jahre und der Musik Django Reinhardts, und reicht bis zu Klezmer, traditionellen Romasongs und arabischer Musik. Er ist in ganz Europa und Zentralasien aufgetreten.</div>
+        <div class="musician-name" data-ru="Симон Райтхофер">Simon Reithofer</div>
+        <div class="musician-role" data-en="Guitar &amp; Banjo" data-ru="Гитара и банджо">Gitarre &amp; Banjo</div>
+        <div class="musician-bio" data-en="Simon Reithofer is a musicologist, jazz guitarist, and instrumental pedagogue based in Graz. His musical focus lies in the jazz of the 1920s through 1940s and the music of Django Reinhardt, extending to klezmer, traditional Roma songs, and Arabic music. He has performed across Europe and Central Asia." data-ru="Симон Райтхофер — музыковед, джазовый гитарист и музыкальный педагог из Граца. Его музыкальные интересы сосредоточены на джазе 1920–40-х годов и музыке Джанго Рейнхардта, а также охватывают клезмер, традиционные ромские песни и арабскую музыку. Он выступал по всей Европе и Центральной Азии.">Simon Reithofer ist Musikwissenschaftler, Jazzgitarrist und Instrumentalpädagoge in Graz. Sein musikalischer Schwerpunkt liegt im Jazz der 1920er bis 40er Jahre und der Musik Django Reinhardts, und reicht bis zu Klezmer, traditionellen Romasongs und arabischer Musik. Er ist in ganz Europa und Zentralasien aufgetreten.</div>
         <div class="musician-links">
-          <a href="http://www.simon-reithofer.com/home/" target="_blank" rel="noopener" class="musician-link">Website ↗</a>
+          <a href="http://www.simon-reithofer.com/home/" target="_blank" rel="noopener" class="musician-link" data-en="Website ↗" data-ru="Сайт ↗">Website ↗</a>
         </div>
       </div>
     </div>
     <div class="musician-card">
-      <div class="musician-photo"><img src="images/photo-bernd.jpg" alt="Bernd Kohlhofer am Akkordeon" data-en-attr="alt:Bernd Kohlhofer on accordion" /></div>
+      <div class="musician-photo"><img src="images/photo-bernd.jpg" alt="Bernd Kohlhofer am Akkordeon" data-en-attr="alt:Bernd Kohlhofer on accordion" data-ru-attr="alt:Bernd Kohlhofer на аккордеоне" /></div>
       <div class="musician-info">
-        <div class="musician-name">Bernd Kohlhofer</div>
-        <div class="musician-role" data-en="Accordion">Akkordeon</div>
-        <div class="musician-bio" data-en="Bernd Kohlhofer is an Austrian accordionist and educator, known for his stylistic range across classical music, jazz, and world music. Trained at the Gleisdorf Music School and the University of Music and Performing Arts Graz, he performs with ensembles such as the Mosaic Trio and the Adana Klezmer Band, blending klezmer, tango nuevo, and Balkan rhythms with modern improvisation.">Bernd Kohlhofer ist österreichischer Akkordeonist und Pädagoge, bekannt für seine stilistische Bandbreite in klassischer Musik, Jazz und Weltmusik. Ausgebildet an der Musikschule Gleisdorf und der Kunstuniversität Graz, tritt er mit Ensembles wie dem Mosaic Trio und der Adana Klezmer Band auf und verbindet Klezmer, Tango Nuevo und Balkanrhythmen mit moderner Improvisation.</div>
+        <div class="musician-name" data-ru="Бернд Кольхофер">Bernd Kohlhofer</div>
+        <div class="musician-role" data-en="Accordion" data-ru="Аккордеон">Akkordeon</div>
+        <div class="musician-bio" data-en="Bernd Kohlhofer is an Austrian accordionist and educator, known for his stylistic range across classical music, jazz, and world music. Trained at the Gleisdorf Music School and the University of Music and Performing Arts Graz, he performs with ensembles such as the Mosaic Trio and the Adana Klezmer Band, blending klezmer, tango nuevo, and Balkan rhythms with modern improvisation." data-ru="Бернд Кольхофер — австрийский аккордеонист и педагог, известный стилистическим диапазоном от классики до джаза и мировой музыки. Обучался в музыкальной школе Гляйсдорфа и Университете музыки и сценических искусств Граца, выступает с ансамблями Mosaic Trio и Adana Klezmer Band, сочетая клезмер, танго нуэво и балканские ритмы с современной импровизацией.">Bernd Kohlhofer ist österreichischer Akkordeonist und Pädagoge, bekannt für seine stilistische Bandbreite in klassischer Musik, Jazz und Weltmusik. Ausgebildet an der Musikschule Gleisdorf und der Kunstuniversität Graz, tritt er mit Ensembles wie dem Mosaic Trio und der Adana Klezmer Band auf und verbindet Klezmer, Tango Nuevo und Balkanrhythmen mit moderner Improvisation.</div>
       </div>
     </div>
     <div class="musician-card">
-      <div class="musician-photo"><img src="images/photo-michael.jpg" alt="Michael Leitner an der Geige" data-en-attr="alt:Michael Leitner on violin" /></div>
+      <div class="musician-photo"><img src="images/photo-michael.jpg" alt="Michael Leitner an der Geige" data-en-attr="alt:Michael Leitner on violin" data-ru-attr="alt:Michael Leitner на скрипке" /></div>
       <div class="musician-info">
-        <div class="musician-name">Michael Leitner</div>
-        <div class="musician-role" data-en="Violin">Violine</div>
-        <div class="musician-bio" data-en="A classically trained violinist with broad ensemble and orchestral experience. During his studies he discovered jazz — particularly the style of Stéphane Grappelli and Django Reinhardt — and was lastingly influenced by their phrasing, articulation, and playing techniques. Since then, he has moved freely between worlds: as first violinist, arranger, and composer with Cross-Strings, in the gypsy swing universe of Club Mineur, in the classical-symphonic repertoire of the Recreation Orchestra Graz, and with the Louis Spohr Sinfonietta.">Klassisch ausgebildeter Geiger mit breiter Ensemble- und Orchestererfahrung. Während des Studiums entdeckte er den Jazz — insbesondere den Stil von Stéphane Grappelli und Django Reinhardt — und ließ sich von dessen Phrasierung, Artikulation und Spieltechniken nachhaltig prägen. Seitdem bewegt er sich stilistisch frei zwischen Welten: als erster Geiger, Arrangeur und Komponist bei Cross-Strings, im Gypsy-Swing-Kosmos des Club Mineur, im klassisch-symphonischen Repertoire des Recreation Orchestra Graz sowie der Louis Spohr Sinfonietta.</div>
+        <div class="musician-name" data-ru="Михаэль Ляйтнер">Michael Leitner</div>
+        <div class="musician-role" data-en="Violin" data-ru="Скрипка">Violine</div>
+        <div class="musician-bio" data-en="A classically trained violinist with broad ensemble and orchestral experience. During his studies he discovered jazz — particularly the style of Stéphane Grappelli and Django Reinhardt — and was lastingly influenced by their phrasing, articulation, and playing techniques. Since then, he has moved freely between worlds: as first violinist, arranger, and composer with Cross-Strings, in the gypsy swing universe of Club Mineur, in the classical-symphonic repertoire of the Recreation Orchestra Graz, and with the Louis Spohr Sinfonietta." data-ru="Скрипач с классическим образованием и богатым опытом ансамблевой и оркестровой работы. Во время учёбы он открыл для себя джаз — особенно стиль Стефана Граппелли и Джанго Рейнхардта — и впитал их фразировку, артикуляцию и технику игры. С тех пор он свободно перемещается между мирами: как первый скрипач, аранжировщик и композитор в Cross-Strings, в мире джипси-свинга Club Mineur, в классико-симфоническом репертуаре Recreation Orchestra Graz и в составе Louis Spohr Sinfonietta.">Klassisch ausgebildeter Geiger mit breiter Ensemble- und Orchestererfahrung. Während des Studiums entdeckte er den Jazz — insbesondere den Stil von Stéphane Grappelli und Django Reinhardt — und ließ sich von dessen Phrasierung, Artikulation und Spieltechniken nachhaltig prägen. Seitdem bewegt er sich stilistisch frei zwischen Welten: als erster Geiger, Arrangeur und Komponist bei Cross-Strings, im Gypsy-Swing-Kosmos des Club Mineur, im klassisch-symphonischen Repertoire des Recreation Orchestra Graz sowie der Louis Spohr Sinfonietta.</div>
         <div class="musician-links">
           <a href="https://www.instagram.com/leitnermichael80" target="_blank" rel="noopener" class="musician-link">Instagram ↗</a>
         </div>
       </div>
     </div>
     <div class="musician-card">
-      <div class="musician-photo"><img src="images/photo-lukas.jpg" alt="Lukas Straußberger am Kontrabass" data-en-attr="alt:Lukas Straußberger on double bass" /></div>
+      <div class="musician-photo"><img src="images/photo-lukas.jpg" alt="Lukas Straußberger am Kontrabass" data-en-attr="alt:Lukas Straußberger on double bass" data-ru-attr="alt:Lukas Straußberger на контрабасе" /></div>
       <div class="musician-info">
-        <div class="musician-name">Lukas Straußberger</div>
-        <div class="musician-role" data-en="Double bass">Kontrabass</div>
-        <div class="musician-bio" data-en="Raised in Frohnleiten, Lukas Straußberger studied jazz double bass at the University of Music and Performing Arts Graz, as well as electric bass and double bass at the Joseph Haydn Private University in Eisenstadt. Since 2023, he has been teaching double bass, electric bass, and guitar at several Styrian music schools. As a freelance musician, he plays in numerous formations — including the Streetview Dixieclub, Club Mineur, Bixbeat, and the Styrian State Youth Wind Orchestra.">In Frohnleiten aufgewachsen, studierte Lukas Straußberger Jazz-Kontrabass an der Kunstuniversität Graz sowie E-Bass und Kontrabass im IGP-Studium an der Joseph Haydn Privathochschule Eisenstadt. Seit 2023 unterrichtet er an mehreren steirischen Musikschulen die Fächer Kontrabass, E-Bass und Gitarre. Als freischaffender Musiker ist er in zahlreichen Formationen tätig — u. a. beim Streetview Dixieclub, Club Mineur und Bixbeat sowie im Landesjugendblasorchester Steiermark.</div>
+        <div class="musician-name" data-ru="Лукас Штраусбергер">Lukas Straußberger</div>
+        <div class="musician-role" data-en="Double bass" data-ru="Контрабас">Kontrabass</div>
+        <div class="musician-bio" data-en="Raised in Frohnleiten, Lukas Straußberger studied jazz double bass at the University of Music and Performing Arts Graz, as well as electric bass and double bass at the Joseph Haydn Private University in Eisenstadt. Since 2023, he has been teaching double bass, electric bass, and guitar at several Styrian music schools. As a freelance musician, he plays in numerous formations — including the Streetview Dixieclub, Club Mineur, Bixbeat, and the Styrian State Youth Wind Orchestra." data-ru="Лукас Штраусбергер вырос во Фронлайтене, изучал джазовый контрабас в Университете музыки и сценических искусств Граца, а также электробас и контрабас в частном университете Йозефа Гайдна в Айзенштадте. С 2023 года преподаёт контрабас, электробас и гитару в нескольких музыкальных школах Штирии. Как фрилансер, играет в многочисленных коллективах — в том числе в Streetview Dixieclub, Club Mineur, Bixbeat и в молодёжном духовом оркестре земли Штирия.">In Frohnleiten aufgewachsen, studierte Lukas Straußberger Jazz-Kontrabass an der Kunstuniversität Graz sowie E-Bass und Kontrabass im IGP-Studium an der Joseph Haydn Privathochschule Eisenstadt. Seit 2023 unterrichtet er an mehreren steirischen Musikschulen die Fächer Kontrabass, E-Bass und Gitarre. Als freischaffender Musiker ist er in zahlreichen Formationen tätig — u. a. beim Streetview Dixieclub, Club Mineur und Bixbeat sowie im Landesjugendblasorchester Steiermark.</div>
       </div>
     </div>
   </div>
@@ -853,27 +882,27 @@ gar nicht so schwer</span></div>
     <span class="section-label">Credits</span>
     <div class="credits-grid">
       <div class="credit-item">
-        <div class="credit-role" data-en="Recording">Aufnahme</div>
+        <div class="credit-role" data-en="Recording" data-ru="Запись">Aufnahme</div>
         <div class="credit-name">Audiotope Studios</div>
-        <div class="credit-desc" data-en="Recording, mixing, audio post-production, and mastering.">Aufnahme, Abmischung, Audio-Postproduktion und Mastering.</div>
+        <div class="credit-desc" data-en="Recording, mixing, audio post-production, and mastering." data-ru="Запись, микширование, звуковая постобработка и мастеринг.">Aufnahme, Abmischung, Audio-Postproduktion und Mastering.</div>
         <div class="credit-links">
-          <a href="https://www.audiotope.at/" target="_blank" rel="noopener" class="credit-link">Website ↗</a>
+          <a href="https://www.audiotope.at/" target="_blank" rel="noopener" class="credit-link" data-en="Website ↗" data-ru="Сайт ↗">Website ↗</a>
         </div>
       </div>
       <div class="credit-item">
-        <div class="credit-role" data-en="Studio &amp; portrait photography">Studio- und Portraitfotografie</div>
+        <div class="credit-role" data-en="Studio &amp; portrait photography" data-ru="Студийная и портретная фотография">Studio- und Portraitfotografie</div>
         <div class="credit-name">Abraham Reithofer</div>
-        <div class="credit-desc" data-en="All studio and portrait photography.">Alle Studio- und Portraitaufnahmen.</div>
+        <div class="credit-desc" data-en="All studio and portrait photography." data-ru="Все студийные и портретные фотографии.">Alle Studio- und Portraitaufnahmen.</div>
         <div class="credit-links">
-          <a href="http://www.reithofer-media.com/" target="_blank" rel="noopener" class="credit-link">Website ↗</a>
+          <a href="http://www.reithofer-media.com/" target="_blank" rel="noopener" class="credit-link" data-en="Website ↗" data-ru="Сайт ↗">Website ↗</a>
         </div>
       </div>
       <div class="credit-item">
-        <div class="credit-role" data-en="Album cover photography">Albumcover-Fotografie</div>
+        <div class="credit-role" data-en="Album cover photography" data-ru="Фотография обложки альбома">Albumcover-Fotografie</div>
         <div class="credit-name">Stefan Leitner</div>
-        <div class="credit-desc" data-en="Album cover photograph.">Foto für das Albumcover.</div>
+        <div class="credit-desc" data-en="Album cover photograph." data-ru="Фотография обложки альбома.">Foto für das Albumcover.</div>
         <div class="credit-links">
-          <a href="https://stefanleitner.com/" target="_blank" rel="noopener" class="credit-link">Website ↗</a>
+          <a href="https://stefanleitner.com/" target="_blank" rel="noopener" class="credit-link" data-en="Website ↗" data-ru="Сайт ↗">Website ↗</a>
           <a href="https://www.instagram.com/stefan_leitner/" target="_blank" rel="noopener" class="credit-link">Instagram ↗</a>
         </div>
       </div>
@@ -882,9 +911,9 @@ gar nicht so schwer</span></div>
 </section>
 
 <section id="support">
-  <span class="section-label" data-en="Supported by">Mit Unterstützung von</span>
-  <h2 class="section-title" data-en="Thank you">Danke</h2>
-  <p class="support-text" data-en="Lelio was made possible by the generous support of the Austrian Federal Ministry of Arts, Culture, Civil Service and Sport, and the City of Graz. We are grateful for their commitment to cultural life and to the voices that deserve to be heard.">Lelio wurde ermöglicht durch die großzügige Unterstützung des Bundesministeriums für Kunst, Kultur, öffentlichen Dienst und Sport sowie der Stadt Graz. Wir sind dankbar für ihr Engagement für das kulturelle Leben und für die Stimmen, die es verdienen, gehört zu werden.</p>
+  <span class="section-label" data-en="Supported by" data-ru="При поддержке">Mit Unterstützung von</span>
+  <h2 class="section-title" data-en="Thank you" data-ru="Спасибо">Danke</h2>
+  <p class="support-text" data-en="Lelio was made possible by the generous support of the Austrian Federal Ministry of Arts, Culture, Civil Service and Sport, and the City of Graz. We are grateful for their commitment to cultural life and to the voices that deserve to be heard." data-ru="Lelio стал возможен благодаря щедрой поддержке Федерального министерства искусства, культуры, государственной службы и спорта Австрии, а также города Грац. Мы благодарны за их приверженность культурной жизни и голосам, которые заслуживают быть услышанными.">Lelio wurde ermöglicht durch die großzügige Unterstützung des Bundesministeriums für Kunst, Kultur, öffentlichen Dienst und Sport sowie der Stadt Graz. Wir sind dankbar für ihr Engagement für das kulturelle Leben und für die Stimmen, die es verdienen, gehört zu werden.</p>
   <div class="support-logos">
     <img src="images/logo-bmwkms.png" alt="Bundesministerium für Kunst, Kultur, öffentlichen Dienst und Sport" class="support-logo-img" />
     <img src="images/logo-stadtgraz.jpg" alt="Stadt Graz" class="support-logo-img" />
@@ -892,8 +921,8 @@ gar nicht so schwer</span></div>
 </section>
 
 <section id="contact">
-  <span class="section-label" data-en="Contact">Kontakt</span>
-  <h2 class="section-title" data-en="Get in touch">Schreibt uns</h2>
+  <span class="section-label" data-en="Contact" data-ru="Контакты">Kontakt</span>
+  <h2 class="section-title" data-en="Get in touch" data-ru="Напишите нам">Schreibt uns</h2>
   <a href="#" class="contact-email" id="contact-email-link"></a>
 </section>
 
@@ -902,31 +931,36 @@ gar nicht so schwer</span></div>
 </footer>
 
 <script>
-  // Translation engine
+  // Translation engine — supports de, en, ru
   let currentLang = 'de';
+  const langs = ['de','en','ru'];
+  const langLabels = { de:'DE', en:'EN', ru:'RU' };
   const storedContent = new Map();
 
   function initTranslations() {
-    // Store original German content for all translatable elements
-    document.querySelectorAll('[data-en], [data-en-html], [data-en-attr]').forEach(el => {
-      if (!storedContent.has(el)) {
-        const key = el.getAttribute('data-en') || el.getAttribute('data-en-html') || el.getAttribute('data-en-attr');
-        if (el.hasAttribute('data-en')) {
-          storedContent.set(el, { type: 'text', de: el.textContent, en: el.getAttribute('data-en') });
-        } else if (el.hasAttribute('data-en-html')) {
-          storedContent.set(el, { type: 'html', de: el.innerHTML, en: el.getAttribute('data-en-html') });
-        } else if (el.hasAttribute('data-en-attr')) {
-          const attrMap = {};
-          el.getAttribute('data-en-attr').split(';').forEach(pair => {
-            const [attr, val] = pair.trim().split(':');
-            attrMap[attr.trim()] = val.trim();
-          });
-          const deAttrs = {};
-          Object.keys(attrMap).forEach(attr => {
-            deAttrs[attr] = el.getAttribute(attr);
-          });
-          storedContent.set(el, { type: 'attr', de: deAttrs, en: attrMap });
-        }
+    document.querySelectorAll('[data-en], [data-en-html], [data-en-attr], [data-ru], [data-ru-html], [data-ru-attr]').forEach(el => {
+      if (storedContent.has(el)) return;
+      if (el.hasAttribute('data-en') || el.hasAttribute('data-ru')) {
+        storedContent.set(el, { type:'text', de:el.textContent, en:el.getAttribute('data-en')||el.textContent, ru:el.getAttribute('data-ru')||el.textContent });
+      } else if (el.hasAttribute('data-en-html') || el.hasAttribute('data-ru-html')) {
+        storedContent.set(el, { type:'html', de:el.innerHTML, en:el.getAttribute('data-en-html')||el.innerHTML, ru:el.getAttribute('data-ru-html')||el.innerHTML });
+      } else if (el.hasAttribute('data-en-attr') || el.hasAttribute('data-ru-attr')) {
+        const entry = { type:'attr', de:{}, en:{}, ru:{} };
+        ['en','ru'].forEach(lg => {
+          const raw = el.getAttribute('data-'+lg+'-attr');
+          if (raw) {
+            raw.split(';').forEach(pair => {
+              const [attr, val] = pair.trim().split(':');
+              if (attr && val) entry[lg][attr.trim()] = val.trim();
+            });
+          }
+        });
+        Object.keys({...entry.en,...entry.ru}).forEach(attr => {
+          entry.de[attr] = el.getAttribute(attr);
+          if (!entry.en[attr]) entry.en[attr] = entry.de[attr];
+          if (!entry.ru[attr]) entry.ru[attr] = entry.de[attr];
+        });
+        storedContent.set(el, entry);
       }
     });
   }
@@ -935,14 +969,11 @@ gar nicht so schwer</span></div>
     currentLang = lang;
     document.documentElement.lang = lang;
 
-    document.querySelectorAll('[data-en], [data-en-html], [data-en-attr]').forEach(el => {
-      const stored = storedContent.get(el);
-      if (!stored) return;
-
+    storedContent.forEach((stored, el) => {
       if (stored.type === 'text') {
-        el.textContent = lang === 'de' ? stored.de : stored.en;
+        el.textContent = stored[lang];
       } else if (stored.type === 'html') {
-        el.innerHTML = lang === 'de' ? stored.de : stored.en;
+        el.innerHTML = stored[lang];
       } else if (stored.type === 'attr') {
         Object.keys(stored[lang]).forEach(attr => {
           el.setAttribute(attr, stored[lang][attr]);
@@ -950,23 +981,46 @@ gar nicht so schwer</span></div>
       }
     });
 
-    // Update lang button states
-    document.querySelectorAll('.lang-btn').forEach(btn => {
+    // Update dropdown states
+    document.querySelectorAll('.lang-current').forEach(btn => {
+      btn.textContent = langLabels[lang];
+    });
+    document.querySelectorAll('.lang-menu button').forEach(btn => {
       btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
     });
 
-    // Re-inject email links
+    // Close all dropdowns
+    document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('open'));
+
     injectEmails();
   }
 
-  // Initialize on page load
   initTranslations();
 
-  // Language button listeners
-  document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const lang = btn.getAttribute('data-lang');
-      setLang(lang);
+  // Dropdown toggle & language selection
+  document.querySelectorAll('.lang-dropdown').forEach(dropdown => {
+    const toggle = dropdown.querySelector('.lang-current');
+    const menu = dropdown.querySelector('.lang-menu');
+
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = dropdown.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    menu.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setLang(btn.getAttribute('data-lang'));
+      });
+    });
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.lang-dropdown').forEach(d => {
+      d.classList.remove('open');
+      d.querySelector('.lang-current').setAttribute('aria-expanded','false');
     });
   });
 
