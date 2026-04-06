@@ -1016,7 +1016,7 @@ gar nicht so schwer</span></div>
     }
     window.history.replaceState({}, '', url);
 
-    injectEmails();
+    if (typeof injectEmails === 'function') injectEmails();
   }
 
   initTranslations();
@@ -1137,12 +1137,14 @@ gar nicht so schwer</span></div>
     }
     var rightsLink = document.getElementById('rights-email-link');
     if (rightsLink) {
-      rightsLink.innerHTML = '';
-      var a = document.createElement('a');
-      a.href = 'mailto:' + addr;
-      a.textContent = addr;
-      a.style.cssText = 'color:var(--black);text-decoration:none;border-bottom:1px solid rgba(26,26,26,0.35);padding-bottom:0.1rem;';
-      rightsLink.appendChild(a);
+      var existing = rightsLink.querySelector('a');
+      if (!existing) {
+        var a = document.createElement('a');
+        a.href = 'mailto:' + addr;
+        a.textContent = addr;
+        a.style.cssText = 'color:var(--black);text-decoration:none;border-bottom:1px solid rgba(26,26,26,0.35);padding-bottom:0.1rem;';
+        rightsLink.appendChild(a);
+      }
     }
   }
   injectEmails();
