@@ -38,7 +38,6 @@
 
     /* LANG SWITCH */
     .lang-dropdown { position:relative;margin-left:1.2rem; }
-    .lang-dropdown-mobile { display:none; }
     .lang-current { background:none;border:1px solid var(--border);font-family:'EB Garamond',serif;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;padding:0.3rem 0.6rem;color:var(--black);display:flex;align-items:center;gap:0.35rem;transition:border-color 0.2s; }
     .lang-current:hover { border-color:var(--black); }
     .lang-current::after { content:'';border-left:3.5px solid transparent;border-right:3.5px solid transparent;border-top:4px solid currentColor;margin-top:1px; }
@@ -47,6 +46,12 @@
     .lang-menu button { display:block;width:100%;background:none;border:none;font-family:'EB Garamond',serif;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;padding:0.5rem 0.7rem;color:var(--mid);text-align:left;transition:background 0.15s,color 0.15s; }
     .lang-menu button:hover { background:rgba(26,26,26,0.05);color:var(--black); }
     .lang-menu button.active { color:var(--black);font-weight:700; }
+    .lang-bar-mobile { display:none; }
+    .lang-bar { display:flex;gap:0;justify-content:center; }
+    .lang-bar-btn { background:none;border:1px solid var(--border);border-right:none;font-family:'EB Garamond',serif;font-size:0.9rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;padding:0.6rem 1.2rem;color:var(--mid);transition:background 0.15s,color 0.15s; }
+    .lang-bar-btn:last-child { border-right:1px solid var(--border); }
+    .lang-bar-btn.active { color:var(--black);font-weight:700;background:rgba(26,26,26,0.06); }
+    .lang-bar-btn:hover { color:var(--black); }
 
     /* HERO */
     #hero {
@@ -247,11 +252,11 @@
       .nav-links li { border-top:1px solid var(--border); }
       .nav-links a { display:block; padding:0.95rem 1.1rem; font-size:0.95rem; letter-spacing:0.13em; border-bottom:none; }
       .lang-dropdown-desktop { display:none; }
-      .lang-dropdown-mobile { display:block;list-style:none; }
-      .lang-dropdown-mobile .lang-dropdown { margin:0;padding:0.8rem 1.1rem;border-top:1px solid var(--border);display:flex;justify-content:center; }
-      .lang-dropdown-mobile .lang-current { font-size:1rem; }
-      .lang-dropdown-mobile .lang-menu { right:auto;left:50%;transform:translateX(-50%);bottom:calc(100% + 4px);top:auto;box-shadow:0 -4px 12px rgba(0,0,0,0.08); }
-      .lang-dropdown-mobile .lang-menu button { font-size:1rem;padding:0.6rem 1rem; }
+      .lang-bar-mobile { display:block;list-style:none; }
+      .lang-bar-mobile .lang-bar { padding:0.7rem 1.1rem; }
+      .lang-bar-btn { flex:1;text-align:center; }
+      .nav-links li.lang-bar-mobile { border-top:none; }
+      .nav-links li.lang-bar-mobile + li { border-top:1px solid var(--border); }
       /* Content grids */
       .poets-grid { grid-template-columns:1fr 1fr; }
       .poet-card:nth-child(3n) { border-right:1px solid var(--border); }
@@ -369,6 +374,13 @@
     <span class="menu-icon" aria-hidden="true"><span></span><span></span><span></span></span>
   </button>
   <ul class="nav-links" id="site-menu">
+    <li class="lang-bar-mobile">
+      <div class="lang-bar">
+        <button class="lang-bar-btn active" data-lang="de">DE</button>
+        <button class="lang-bar-btn" data-lang="en">EN</button>
+        <button class="lang-bar-btn" data-lang="ru">RU</button>
+      </div>
+    </li>
     <li><a href="#why" data-en="About" data-ru="О проекте">Über das Projekt</a></li>
     <li><a href="#music" data-en="Music" data-ru="Музыка">Musik</a></li>
     <li><a href="#poets" data-en="Poets" data-ru="Поэты">Dichter·innen</a></li>
@@ -376,16 +388,6 @@
     <li><a href="#musicians" data-en="Musicians" data-ru="Музыканты">Musiker·innen</a></li>
     <li><a href="#listen" data-en="Listen" data-ru="Слушать">Anhören</a></li>
     <li><a href="#contact" data-en="Contact" data-ru="Контакты">Kontakt</a></li>
-    <li class="lang-dropdown-mobile">
-      <div class="lang-dropdown">
-        <button class="lang-current" aria-expanded="false" aria-haspopup="true">DE</button>
-        <ul class="lang-menu" role="menu">
-          <li><button role="menuitem" class="active" data-lang="de">Deutsch</button></li>
-          <li><button role="menuitem" data-lang="en">English</button></li>
-          <li><button role="menuitem" data-lang="ru">Русский</button></li>
-        </ul>
-      </div>
-    </li>
   </ul>
   <div class="lang-dropdown lang-dropdown-desktop">
     <button class="lang-current" aria-expanded="false" aria-haspopup="true">DE</button>
@@ -932,10 +934,18 @@ gar nicht so schwer</span></div>
 
 <script>
   // Translation engine — supports de, en, ru
-  let currentLang = 'de';
   const langs = ['de','en','ru'];
   const langLabels = { de:'DE', en:'EN', ru:'RU' };
   const storedContent = new Map();
+
+  // Detect language from URL parameter (?lang=en) or default to 'de'
+  function getInitialLang() {
+    const params = new URLSearchParams(window.location.search);
+    const urlLang = params.get('lang');
+    if (urlLang && langs.includes(urlLang)) return urlLang;
+    return 'de';
+  }
+  let currentLang = getInitialLang();
 
   function initTranslations() {
     document.querySelectorAll('[data-en], [data-en-html], [data-en-attr], [data-ru], [data-ru-html], [data-ru-attr]').forEach(el => {
@@ -981,7 +991,7 @@ gar nicht so schwer</span></div>
       }
     });
 
-    // Update dropdown states
+    // Update desktop dropdown states
     document.querySelectorAll('.lang-current').forEach(btn => {
       btn.textContent = langLabels[lang];
     });
@@ -989,15 +999,34 @@ gar nicht so schwer</span></div>
       btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
     });
 
+    // Update mobile lang-bar states
+    document.querySelectorAll('.lang-bar-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+    });
+
     // Close all dropdowns
     document.querySelectorAll('.lang-dropdown').forEach(d => d.classList.remove('open'));
+
+    // Persist language in URL (without page reload)
+    const url = new URL(window.location);
+    if (lang === 'de') {
+      url.searchParams.delete('lang');
+    } else {
+      url.searchParams.set('lang', lang);
+    }
+    window.history.replaceState({}, '', url);
 
     injectEmails();
   }
 
   initTranslations();
 
-  // Dropdown toggle & language selection
+  // Apply initial language (if not 'de', switch immediately)
+  if (currentLang !== 'de') {
+    setLang(currentLang);
+  }
+
+  // Desktop dropdown toggle & selection
   document.querySelectorAll('.lang-dropdown').forEach(dropdown => {
     const toggle = dropdown.querySelector('.lang-current');
     const menu = dropdown.querySelector('.lang-menu');
@@ -1013,6 +1042,13 @@ gar nicht so schwer</span></div>
         e.stopPropagation();
         setLang(btn.getAttribute('data-lang'));
       });
+    });
+  });
+
+  // Mobile lang-bar button listeners
+  document.querySelectorAll('.lang-bar-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      setLang(btn.getAttribute('data-lang'));
     });
   });
 
