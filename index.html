@@ -1090,19 +1090,23 @@ gar nicht so schwer</span></div>
   function toggleTrack(btn) {
     const item = btn.parentElement;
     const isOpen = item.classList.contains('open');
-    document.querySelectorAll('.track-item.open').forEach(i => {
-      i.classList.remove('open');
-      i.querySelector('.track-header').setAttribute('aria-expanded', 'false');
-    });
-    if (!isOpen) {
+
+    if (isOpen) {
+      // Close this one
+      item.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+    } else {
+      // Open it (don't close others)
       item.classList.add('open');
       btn.setAttribute('aria-expanded', 'true');
-      // Scroll the track header to just below the fixed nav after the CSS transition starts
-      setTimeout(() => {
+      // Scroll header into view if needed
+      requestAnimationFrame(() => {
         const navHeight = document.getElementById('main-nav').offsetHeight;
-        const itemTop = item.getBoundingClientRect().top + window.scrollY;
-        window.scrollTo({ top: itemTop - navHeight - 16, behavior: 'smooth' });
-      }, 20);
+        const rect = btn.getBoundingClientRect();
+        if (rect.top < navHeight || rect.bottom > window.innerHeight) {
+          window.scrollTo({ top: rect.top + window.scrollY - navHeight - 12, behavior: 'smooth' });
+        }
+      });
     }
   }
 
